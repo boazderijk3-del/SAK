@@ -16,7 +16,7 @@ niets dat die keuze vastlegt — zet er een interface tussen.
 | — | 3 | database | **OPEN** | zie `docs/database-keuze.md` |
 | — | 4 | bestandsopslag (WORM) | **OPEN** | blokkeert pas bij M3 (materiaal). Tot die tijd achter een interface |
 | — | 5 | realtime | **OPEN** | blokkeert pas bij SAK Meldkamer |
-| — | 6 | mobiel | **OPEN** | blokkeert pas bij SAK M3 |
+| 21-10-2026 | 6 | mobiel | **native, via Capacitor** (+ Tauri voor de meldkamer-pc) | De spec eist push op een VERGRENDELD toestel en escalatie na 180 s; een PWA op iOS kan dat niet garanderen, en kan ook geen achtergrond-GPS of gegarandeerde opslag. Zie `native.md`. Bouwen blijft web-eerst: de schil komt bij SAK M3 |
 | — | 7 | taalmodel | **OPEN** | blokkeert pas bij Phylax M6. Achter een interface |
 | — | 8 | OCR | **OPEN** | blokkeert pas bij M3. Achter een interface |
 | — | 9 | kaarttegels | **OPEN** | blokkeert pas bij SAK Kaart |
