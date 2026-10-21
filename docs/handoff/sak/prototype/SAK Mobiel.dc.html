@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<style>
+html,body{margin:0;height:100%;background:#050607;color:#e6e9ec;font-family:Barlow,system-ui,sans-serif;overflow:hidden}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+a{color:#f2b33d}a:hover{color:#ffd27a}
+button,input,select,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#6b757f}
+select option{background:#0a0c0e;color:#e6e9ec}
+</style>
+<script src="./sak-store.js"></script>
+</helmet>
+<div style="height:100vh;display:flex;justify-content:center;background:#050607">
+<div style="position:relative;width:100%;max-width:440px;height:100%;display:flex;flex-direction:column;background:#0a0c0e;border-left:1px solid #161b20;border-right:1px solid #161b20">
+
+  <header style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #232a31;background:#0d1013;flex:none">
+    <span style="font:700 18px 'JetBrains Mono',monospace;color:#f2b33d">SAK</span>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <select value="{{ me }}" data-v="{{ me }}" onChange="{{ onMe }}" style="background:transparent;border:0;color:#e6e9ec;font-size:15px;font-weight:600;padding:0;max-width:100%"><sc-for list="{{ meOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select>
+      <select value="{{ proj }}" data-v="{{ proj }}" onChange="{{ onProj }}" style="background:transparent;border:0;color:#8a949e;font-size:12px;padding:0;max-width:100%"><sc-for list="{{ projOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select>
+    </div>
+    <span style="font:600 11px 'JetBrains Mono',monospace;color:#8a949e">{{ myPos }}</span>
+    <span title="{{ connTitle }}" style="display:flex;align-items:center;gap:5px;font:600 11px 'JetBrains Mono',monospace;color:{{ connCol }}"><span style="width:8px;height:8px;border-radius:50%;background:{{ connCol }}"></span>{{ connLabel }}</span>
+    <button onClick="{{ lockNow }}" title="Vergrendelen" style="min-width:44px;min-height:44px;margin:-6px -8px -6px 0;border:0;background:transparent;color:#8a949e;cursor:pointer"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:22px">lock</span></button>
+  </header>
+  <sc-if value="{{ offline }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 14px;background:rgba(242,179,61,.1);border-bottom:1px solid #f2b33d;font-size:14px;color:#e6e9ec;line-height:1.4;flex:none"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:22px;color:#f2b33d">cloud_off</span><span>Geen verbinding. {{ queueText }}</span></div>
+  </sc-if>
+
+  <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+  <main style="flex:1;min-height:0;overflow-y:auto;padding:14px 14px 110px;display:flex;flex-direction:column;gap:14px">
+
+    <sc-if value="{{ hasBoloAlert }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ toBolo }}" style="flex:none;display:flex;align-items:center;gap:10px;width:100%;min-height:56px;border:2px solid #ff5f57;background:rgba(255,95,87,.1);color:#ff5f57;padding:10px 12px;cursor:pointer;text-align:left">
+        <span style="font-family:'Material Symbols Sharp';font-size:26px;line-height:1;font-feature-settings:'liga'">person_search</span>
+        <span style="flex:1"><span style="display:block;font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">{{ boloAlert.title }}</span><span style="display:block;font-size:13px;color:#e6e9ec">{{ boloAlert.desc }}</span></span>
+      </button>
+    </sc-if>
+
+    <sc-if value="{{ isTaken }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:none;display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{ isTL }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a949e">Mijn team</div>
+            <sc-for list="{{ escTasks }}" as="e" hint-placeholder-count="0">
+              <div style="border:2px solid #ff5f57;background:rgba(255,95,87,.08);padding:12px;display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:20px;color:#ff5f57">notification_important</span><span style="font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#ff5f57">Niet bevestigd</span><span style="flex:1"></span><span style="font:700 14px 'JetBrains Mono',monospace;color:#ff5f57">{{ e.elapsed }}</span></div>
+                <div style="font-size:17px;font-weight:700;line-height:1.25">{{ e.title }}</div>
+                <div style="font-size:13px;color:#c3cad1">→ {{ e.who }} · {{ e.incNo }}</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><button onClick="{{ e.viaRadio }}" style="min-height:52px;border:2px solid #f2b33d;background:transparent;color:#f2b33d;cursor:pointer;font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">Bevestigd via portofoon</button><button onClick="{{ e.takeOver }}" style="min-height:52px;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer;font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">Overnemen</button></div>
+              </div>
+            </sc-for>
+            <div style="display:flex;flex-direction:column;border-top:1px solid #232a31">
+              <sc-for list="{{ teamRows }}" as="r" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:10px;min-height:52px;padding:6px 0;border-bottom:1px solid #232a31"><span style="width:10px;height:10px;border-radius:50%;background:{{ r.col }};flex:none"></span><div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{ r.name }}</div><div style="font-size:12px;color:#8a949e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.post }}</div></div><span style="font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:{{ r.col }};text-align:right">{{ r.status }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a949e">Mijn acties</div>
+        <sc-if value="{{ noTasks }}" hint-placeholder-val="{{ false }}"><div style="padding:18px;border:1px dashed #2c343c;color:#8a949e;font-size:15px;text-align:center">Geen acties voor jou. Blijf op je post.</div></sc-if>
+        <sc-for list="{{ myTasks }}" as="t" hint-placeholder-count="1">
+          <div style="border:2px solid {{ t.col }};background:#12161a;padding:14px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:600 12px 'JetBrains Mono',monospace;color:#8a949e">{{ t.incNo }}</span><span style="flex:1"></span><span style="font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:{{ t.col }}">{{ t.status }}</span></div>
+            <div style="font-size:20px;font-weight:700;line-height:1.2">{{ t.title }}</div>
+            <div style="font-size:14px;color:#c3cad1">{{ t.inc }}</div>
+            <sc-if value="{{ t.hasMed }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;padding:10px;border:1px solid #ff5f57;background:rgba(255,95,87,.08);font-size:14px"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga';color:#ff5f57">emergency</span><span>{{ t.med }}</span></div></sc-if>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><sc-for list="{{ t.steps }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:52px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">{{ b.name }}</button></sc-for></div>
+            <div style="display:flex;gap:6px"><input value="{{ t.fb }}" onChange="{{ t.onFb }}" placeholder="Terugkoppeling…" style="flex:1;min-width:0;min-height:48px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:10px;font-size:16px"><button onClick="{{ t.addFb }}" style="min-width:52px;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer"><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga'">send</span></button></div>
+            <sc-for list="{{ t.feedback }}" as="f" hint-placeholder-count="0"><div style="font-size:13px;color:#8a949e"><span style="font-family:'JetBrains Mono',monospace">{{ f.when }}</span> {{ f.by }}: <span style="color:#c3cad1">{{ f.text }}</span></div></sc-for>
+          </div>
+        </sc-for>
+
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a949e;margin-top:6px">Onveilige situaties · afvinken</div>
+        <sc-if value="{{ noUnsafe }}" hint-placeholder-val="{{ false }}"><div style="font-size:14px;color:#8a949e">Niets open.</div></sc-if>
+        <sc-for list="{{ unsafe }}" as="u" hint-placeholder-count="1">
+          <div style="border:1px solid #f2d64b;background:#12161a;padding:12px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;gap:8px;align-items:center"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga';color:#f2d64b">warning</span><span style="flex:1;font-size:15px;font-weight:600">{{ u.where }}</span><span style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ u.ago }}</span></div>
+            <div style="font-size:15px;color:#c3cad1">{{ u.text }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">{{ u.thumbs }}</div>
+            <button onClick="{{ u.resolve }}" style="display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border:0;background:#4fd18b;color:#0a0c0e;cursor:pointer;font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase"><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga'">check_box</span>Opgelost</button>
+          </div>
+        </sc-for>
+
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a949e;margin-top:6px">Lopende meldingen</div>
+        <sc-for list="{{ openReports }}" as="r" hint-placeholder-count="2">
+          <button onClick="{{ r.onClick }}" style="display:flex;flex-direction:column;gap:6px;width:100%;border:1px solid #232a31;border-left:4px solid {{ r.prioCol }};background:#12161a;color:#e6e9ec;padding:12px;cursor:pointer;text-align:left">
+            <div style="display:flex;gap:8px;align-items:center;width:100%"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga';color:{{ r.col }}">{{ r.icon }}</span><span style="flex:1;font-size:16px;font-weight:600">{{ r.type }}</span><sc-if value="{{ r.hasMed }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga';color:#ff5f57">emergency</span></sc-if><span style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ r.ago }}</span></div>
+            <div style="font-size:14px;color:#c3cad1">{{ r.where }} · {{ r.text }}</div>
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isKaart }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:none;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:4px;overflow-x:auto"><sc-for list="{{ planTabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" style="flex:none;min-height:44px;border:1px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};padding:0 14px;cursor:pointer;font-size:15px">{{ t.name }}</button></sc-for></div>
+        <sc-if value="{{ noPlan }}" hint-placeholder-val="{{ false }}"><div style="padding:18px;border:1px dashed #2c343c;color:#8a949e;text-align:center">Geen plattegrond voor dit project.</div></sc-if>
+        <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;border:1px solid #232a31">
+            {{ planImg }}
+            <sc-for list="{{ markers }}" as="m" hint-placeholder-count="0">
+              <div style="position:absolute;left:{{ m.left }};top:{{ m.top }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none">
+                <div style="width:{{ m.size }};height:{{ m.size }};border-radius:50%;background:{{ m.col }};box-shadow:{{ m.ring }};display:flex;align-items:center;justify-content:center;color:#0a0c0e;font-family:'Material Symbols Sharp';font-size:14px;line-height:1;font-feature-settings:'liga'">{{ m.icon }}</div>
+                <div style="background:rgba(10,12,14,.9);padding:1px 4px;font:600 9px 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;color:{{ m.fg }}">{{ m.name }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8a949e;margin-top:4px">Posten</div>
+        <sc-for list="{{ posts }}" as="p" hint-placeholder-count="5">
+          <div style="display:flex;gap:10px;align-items:center;min-height:52px;padding:8px 12px;border:1px solid {{ p.bd }};background:#12161a">
+            <span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga';color:{{ p.col }}">{{ p.icon }}</span>
+            <span style="flex:1;min-width:0"><span style="display:block;font-size:16px;font-weight:600">{{ p.name }}</span><span style="display:block;font-size:13px;color:#8a949e">{{ p.staff }}</span></span>
+            <span style="font-size:12px;color:#8a949e">{{ p.plan }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBer }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:none;display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ msgRows }}" as="m" hint-placeholder-count="3">
+          <div style="align-self:{{ m.align }};max-width:88%;background:{{ m.bg }};border:1px solid #232a31;padding:9px 12px"><div style="display:flex;gap:8px;font-size:12px"><span style="color:{{ m.col }};font-weight:700">{{ m.from }}</span><span style="font-family:'JetBrains Mono',monospace;color:#6b757f">{{ m.when }}</span></div><div style="font-size:16px;line-height:1.35">{{ m.text }}</div></div>
+        </sc-for>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px"><sc-for list="{{ quickMsgs }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.onClick }}" style="min-height:48px;border:1px solid #2c343c;background:#12161a;color:#e6e9ec;cursor:pointer;font-size:14px">{{ q.text }}</button></sc-for></div>
+        <div style="display:flex;gap:6px"><input value="{{ msgText }}" onChange="{{ onMsg }}" onKeyDown="{{ onMsgKey }}" placeholder="Bericht aan iedereen…" style="flex:1;min-width:0;min-height:52px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:10px;font-size:16px"><button onClick="{{ sendMsg }}" style="min-width:56px;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer"><span style="font-family:'Material Symbols Sharp';font-size:24px;line-height:1;font-feature-settings:'liga'">send</span></button></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isReg }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:none;display:flex;flex-direction:column;gap:12px">
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;background:#0d1013;border:1px solid #232a31;padding:3px"><sc-for list="{{ regTabs }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}" style="min-height:44px;border:0;background:{{ t.bg }};color:{{ t.fg }};cursor:pointer;font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">{{ t.name }}</button></sc-for></div>
+
+        <sc-if value="{{ isDeur }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:8px;background:#0a0c0e;border:2px solid #f2b33d;padding:0 12px"><span style="font-family:'Material Symbols Sharp';font-size:24px;line-height:1;font-feature-settings:'liga';color:#f2b33d">badge</span><input value="{{ dq }}" onChange="{{ onDq }}" placeholder="Naam of ledennummer" style="flex:1;min-width:0;min-height:56px;border:0;background:transparent;color:#e6e9ec;font-size:18px;outline:none"></div>
+            <sc-if value="{{ deurHint }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:#8a949e">Zoek iemand aan de deur. Je ziet direct of er een ontzegging, royement of openstaande boete is voor {{ projName }}.</div><div style="font-size:12px;color:#6b757f;margin-top:4px">Je ziet toegang, foto en signalement. Personalia staan alleen bij de meldkamer.</div></sc-if>
+            <sc-for list="{{ deurRows }}" as="p" hint-placeholder-count="0">
+              <div style="border:3px solid {{ p.col }};background:#12161a;display:flex;flex-direction:column">
+                <div style="display:flex;align-items:center;gap:12px;padding:14px;background:{{ p.band }}">
+                  <span style="font-family:'Material Symbols Sharp';font-size:34px;line-height:1;font-feature-settings:'liga';color:{{ p.col }}">{{ p.icon }}</span>
+                  <div style="flex:1"><div style="font:700 22px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:{{ p.col }}">{{ p.verdict }}</div><div style="font-size:14px;color:#e6e9ec">{{ p.reason }}</div></div>
+                </div>
+                <div style="padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;gap:10px;align-items:center">{{ p.photo }}<div style="flex:1"><div style="font-size:18px;font-weight:700">{{ p.name }}</div><div style="font:500 13px 'JetBrains Mono',monospace;color:#8a949e">{{ p.member }}</div></div></div>
+                  <sc-if value="{{ p.hasDesc }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:3px;padding:8px 10px;border:1px solid #2c343c;background:#0a0c0e"><span style="font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Signalement</span><span style="font-size:15px;line-height:1.4">{{ p.desc }}</span></div></sc-if>
+                  <sc-for list="{{ p.history }}" as="h" hint-placeholder-count="0"><div style="font-size:13px;color:{{ h.col }}">● {{ h.text }}</div></sc-for>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+                    <button onClick="{{ p.refuse }}" style="min-height:52px;border:2px solid #ff5f57;background:transparent;color:#ff5f57;cursor:pointer;font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">Weigeren</button>
+                    <button onClick="{{ p.incident }}" style="min-height:52px;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer;font:700 14px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">Incident melden</button>
+                  </div>
+                  <sc-if value="{{ p.refused }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#4fd18b">Weigering geregistreerd.</div></sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ deurNew }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px dashed #2c343c;padding:12px;display:flex;flex-direction:column;gap:8px">
+                <div style="font-size:14px;color:#8a949e">Niet gevonden. Nieuw registreren:</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><sc-for list="{{ dnKinds }}" as="b" hint-placeholder-count="2"><button onClick="{{ b.onClick }}" style="min-height:48px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:15px;font-weight:600">{{ b.name }}</button></sc-for></div>
+                <sc-if value="{{ dn.member }}" hint-placeholder-val="{{ true }}"><input value="{{ dn.no }}" onChange="{{ onDnNo }}" placeholder="Ledennummer" style="min-height:48px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:10px;font:500 16px 'JetBrains Mono',monospace"></sc-if>
+                <button onClick="{{ addDeurPerson }}" style="min-height:52px;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer;font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">“{{ dq }}” registreren</button>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isRBolo }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-if value="{{ noBolo }}" hint-placeholder-val="{{ false }}"><div style="font-size:15px;color:#8a949e;text-align:center;padding:18px">Geen actieve BOLO.</div></sc-if>
+            <sc-for list="{{ bolos }}" as="b" hint-placeholder-count="1">
+              <div style="border:2px solid {{ b.col }};background:#12161a;padding:12px;display:flex;flex-direction:column;gap:8px;opacity:{{ b.op }}">
+                <div style="display:flex;gap:8px;align-items:center"><span style="font:700 13px 'JetBrains Mono',monospace;color:{{ b.col }}">{{ b.no }}</span><span style="font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:{{ b.col }}">{{ b.status }}</span><span style="flex:1"></span><span style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ b.ago }}</span></div>
+                {{ b.photo }}
+                <div style="font-size:19px;font-weight:700">{{ b.title }}</div>
+                <div style="font-size:16px;line-height:1.4;color:#e6e9ec">{{ b.desc }}</div>
+                <sc-if value="{{ b.active }}" hint-placeholder-val="{{ false }}"><button onClick="{{ b.seen }}" style="min-height:52px;border:0;background:#ff5f57;color:#0a0c0e;cursor:pointer;font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">Gezien · melden aan meldkamer</button></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isRSanc }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <input value="{{ sq }}" onChange="{{ onSq }}" placeholder="Zoek in sancties" style="min-height:48px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:10px;font-size:16px">
+            <sc-for list="{{ sancs }}" as="sn" hint-placeholder-count="3">
+              <div style="display:flex;gap:10px;align-items:center;min-height:56px;padding:8px 12px;border:1px solid #232a31;border-left:4px solid {{ sn.col }};background:#12161a">
+                <span style="flex:1;min-width:0"><span style="display:block;font-size:16px;font-weight:600">{{ sn.name }}</span><span style="display:block;font-size:13px;color:#8a949e">{{ sn.member }} · {{ sn.text }}</span></span>
+                <span style="font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:{{ sn.col }}">{{ sn.scope }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isRInc }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <sc-for list="{{ incs }}" as="i" hint-placeholder-count="2">
+              <div style="padding:12px;border:1px solid #232a31;background:#12161a;display:flex;flex-direction:column;gap:4px">
+                <div style="display:flex;gap:8px;align-items:center"><span style="font:600 12px 'JetBrains Mono',monospace;color:#f2b33d">{{ i.no }}</span><span style="flex:1"></span><span style="font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:{{ i.stCol }}">{{ i.status }}</span></div>
+                <div style="font-size:16px;font-weight:600">{{ i.title }}</div>
+                <div style="font-size:13px;color:#8a949e">{{ i.when }} · {{ i.persons }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+  </main>
+  </sc-if>
+
+  <nav style="position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr 1fr 84px 1fr 1fr;align-items:end;background:#0d1013;border-top:1px solid #232a31;padding:0 4px 6px;z-index:3">
+    <sc-for list="{{ tabsL }}" as="t" hint-placeholder-count="2">
+      <button onClick="{{ t.onClick }}" style="position:relative;min-height:62px;border:0;background:transparent;color:{{ t.fg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px"><span style="font-family:'Material Symbols Sharp';font-size:26px;line-height:1;font-feature-settings:'liga'">{{ t.icon }}</span><span style="font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">{{ t.label }}</span><sc-if value="{{ t.hasN }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:18%;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#ff5f57;color:#0a0c0e;font:700 11px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center">{{ t.n }}</span></sc-if></button>
+    </sc-for>
+    <button onClick="{{ openMeld }}" style="justify-self:center;width:72px;height:72px;margin-bottom:6px;border-radius:50%;border:4px solid #0a0c0e;background:#f2b33d;color:#0a0c0e;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:translateY(-12px);box-shadow:0 6px 20px rgba(0,0,0,.5)"><span style="font-family:'Material Symbols Sharp';font-size:32px;line-height:1;font-feature-settings:'liga'">add</span><span style="font:700 10px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-top:-2px">Melden</span></button>
+    <sc-for list="{{ tabsR }}" as="t" hint-placeholder-count="2">
+      <button onClick="{{ t.onClick }}" style="position:relative;min-height:62px;border:0;background:transparent;color:{{ t.fg }};cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px"><span style="font-family:'Material Symbols Sharp';font-size:26px;line-height:1;font-feature-settings:'liga'">{{ t.icon }}</span><span style="font:700 11px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">{{ t.label }}</span><sc-if value="{{ t.hasN }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;top:6px;right:18%;min-width:18px;height:18px;padding:0 4px;border-radius:9px;background:#ff5f57;color:#0a0c0e;font:700 11px 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center">{{ t.n }}</span></sc-if></button>
+    </sc-for>
+  </nav>
+
+  <sc-if value="{{ meldOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;background:#0a0c0e;z-index:6;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid #232a31"><button onClick="{{ meldBack }}" style="min-width:44px;min-height:44px;border:0;background:transparent;color:#e6e9ec;cursor:pointer"><span style="font-family:'Material Symbols Sharp';font-size:26px;line-height:1;font-feature-settings:'liga'">{{ backIcon }}</span></button><span style="flex:1;font:700 18px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">{{ meldTitle }}</span></div>
+      <div style="flex:1;min-height:0;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px">
+        <sc-if value="{{ step1 }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><sc-for list="{{ typeBtns }}" as="t" hint-placeholder-count="8"><button onClick="{{ t.onClick }}" style="min-height:96px;border:2px solid {{ t.col }};background:#12161a;color:#e6e9ec;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:700"><span style="font-family:'Material Symbols Sharp';font-size:34px;line-height:1;font-feature-settings:'liga';color:{{ t.col }}">{{ t.icon }}</span>{{ t.name }}</button></sc-for></div>
+        </sc-if>
+        <sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div><div style="font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e;margin-bottom:6px">Waar?</div><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ posBtns }}" as="b" hint-placeholder-count="5"><button onClick="{{ b.onClick }}" style="min-height:46px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};padding:0 12px;cursor:pointer;font-size:15px">{{ b.name }}</button></sc-for></div></div>
+            <div><div style="font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e;margin-bottom:6px">Wat is er aan de hand?</div><textarea value="{{ mf.text }}" onChange="{{ onMfText }}" rows="3" placeholder="Kort en feitelijk" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:12px;font-size:17px;resize:vertical"></textarea></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">{{ mfThumbs }}<label style="min-height:52px;display:flex;align-items:center;gap:8px;border:2px solid #2c343c;padding:0 16px;cursor:pointer;font-size:16px;font-weight:600"><input type="file" accept="image/*" capture="environment" multiple onChange="{{ onMfPhoto }}" style="display:none"><span style="font-family:'Material Symbols Sharp';font-size:24px;line-height:1;font-feature-settings:'liga'">photo_camera</span>Foto</label></div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><sc-for list="{{ prioBtns }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:48px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:14px;font-weight:700">{{ b.name }}</button></sc-for></div>
+            <button onClick="{{ toggleMed }}" style="display:flex;align-items:center;gap:10px;min-height:56px;border:2px solid #ff5f57;background:{{ medBg }};color:{{ medFg }};padding:0 14px;cursor:pointer;font-size:16px;font-weight:700"><span style="font-family:'Material Symbols Sharp';font-size:24px;line-height:1;font-feature-settings:'liga'">emergency</span>Gewonde of onwel</button>
+            <sc-if value="{{ mf.medOn }}" hint-placeholder-val="{{ false }}">
+              <div style="border:1px solid #ff5f57;padding:12px;display:flex;flex-direction:column;gap:10px">
+                <div><div style="font-size:14px;color:#c3cad1;margin-bottom:5px">Bij bewustzijn?</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><sc-for list="{{ mConsc }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:48px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:15px;font-weight:600">{{ b.name }}</button></sc-for></div></div>
+                <div><div style="font-size:14px;color:#c3cad1;margin-bottom:5px">Ademhaling</div><div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><sc-for list="{{ mBreath }}" as="b" hint-placeholder-count="3"><button onClick="{{ b.onClick }}" style="min-height:48px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:15px;font-weight:600">{{ b.name }}</button></sc-for></div></div>
+                <input value="{{ mf.injury }}" onChange="{{ onMfInjury }}" placeholder="Letsel / klachten" style="min-height:48px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:10px;font-size:16px">
+              </div>
+            </sc-if>
+            <div><div style="font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e;margin-bottom:6px">Betrokken personen (optioneel)</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <sc-for list="{{ mfPersons }}" as="p" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:8px;min-height:48px;padding:6px 10px;border:1px solid #2c343c;background:#12161a"><span style="flex:1;font-size:15px">{{ p.name }} <span style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ p.member }}</span></span><button onClick="{{ p.cycleRole }}" style="min-height:36px;border:1px solid {{ p.col }};background:transparent;color:{{ p.col }};padding:0 10px;cursor:pointer;font-size:13px">{{ p.role }}</button><button onClick="{{ p.remove }}" style="border:0;background:transparent;color:#8a949e;cursor:pointer;min-width:36px;min-height:36px"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga'">close</span></button></div></sc-for>
+                <input value="{{ mpq }}" onChange="{{ onMpq }}" placeholder="+ Naam of ledennummer" style="min-height:48px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:10px;font-size:16px">
+                <sc-for list="{{ mpqRows }}" as="x" hint-placeholder-count="0"><button onClick="{{ x.onClick }}" style="display:flex;align-items:center;gap:8px;min-height:48px;border:1px solid #232a31;background:#12161a;color:#e6e9ec;padding:0 10px;cursor:pointer;font-size:15px;text-align:left"><span style="flex:1">{{ x.name }}</span><span style="font-size:12px;color:{{ x.col }}">{{ x.st }}</span></button></sc-for>
+                <sc-if value="{{ mpqNew }}" hint-placeholder-val="{{ false }}"><button onClick="{{ addMpNew }}" style="min-height:48px;border:1px dashed #f2b33d;background:transparent;color:#f2b33d;cursor:pointer;font-size:15px">“{{ mpq }}” als nieuwe persoon</button></sc-if>
+              </div>
+            </div>
+            <button onClick="{{ toggleAsInc }}" style="display:flex;align-items:center;gap:10px;min-height:52px;border:1px solid #2c343c;background:transparent;color:#e6e9ec;padding:0 12px;cursor:pointer;font-size:15px;text-align:left"><span style="font-family:'Material Symbols Sharp';font-size:24px;line-height:1;font-feature-settings:'liga';color:{{ asIncCol }}">{{ asIncIcon }}</span>Direct als incident registreren (bijv. aan de deur)</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ step3 }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:40px 10px;text-align:center"><span style="font-family:'Material Symbols Sharp';font-size:64px;line-height:1;font-feature-settings:'liga';color:#4fd18b">check_circle</span><div style="font:700 24px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">{{ sentTitle }}</div><div style="font-size:16px;color:#c3cad1">{{ sentText }}</div><button onClick="{{ closeMeld }}" style="min-height:56px;width:100%;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer;font:700 16px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">Klaar</button></div>
+        </sc-if>
+      </div>
+      <sc-if value="{{ step2 }}" hint-placeholder-val="{{ false }}"><div style="padding:12px 14px;border-top:1px solid #232a31"><button onClick="{{ sendMeld }}" style="width:100%;min-height:60px;border:0;background:{{ sendBg }};color:#0a0c0e;cursor:pointer;font:700 18px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">{{ sendLabel }}</button></div></sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasAck }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:8;background:#0a0c0e;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:{{ ack.band }};color:#0a0c0e;flex:none"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:26px">campaign</span><span style="flex:1;font:700 20px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Nieuwe opdracht</span><span style="font:700 18px 'JetBrains Mono',monospace">{{ ack.clock }}</span></div>
+      <div style="flex:1;min-height:0;overflow-y:auto;padding:18px 16px;display:flex;flex-direction:column;gap:12px">
+        <div style="font:600 12px 'JetBrains Mono',monospace;color:#8a949e">{{ ack.incNo }} · van {{ ack.from }} · {{ ack.at }}</div>
+        <div style="font-size:26px;font-weight:700;line-height:1.15;text-wrap:pretty">{{ ack.title }}</div>
+        <div style="font-size:16px;color:#c3cad1;line-height:1.4">{{ ack.inc }}</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:16px"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:22px;color:#f2b33d">location_on</span>{{ ack.where }}</div>
+        <sc-if value="{{ ack.hasMed }}" hint-placeholder-val="{{ false }}"><div style="display:flex;gap:8px;padding:10px;border:1px solid #ff5f57;background:rgba(255,95,87,.08);font-size:15px;line-height:1.4"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:20px;color:#ff5f57">emergency</span><span>{{ ack.med }}</span></div></sc-if>
+        <div style="display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#8a949e;line-height:1.45"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:20px">settings_input_antenna</span><span>Ook via de portofoon doorgegeven. Druk op Ontvangen, dan staat vast dat je hem hebt.</span></div>
+        <sc-if value="{{ ack.escalated }}" hint-placeholder-val="{{ false }}"><div style="padding:12px;border:2px solid #ff5f57;font-size:15px;line-height:1.45">Niet binnen 3 minuten bevestigd. De opdracht is doorgezet naar teamleider {{ ack.tl }}. Bevestig alsnog, dan weet de meldkamer dat je hem hebt.</div></sc-if>
+      </div>
+      <div style="padding:14px 16px 20px;border-top:1px solid #232a31;display:flex;flex-direction:column;gap:8px;flex:none">
+        <button onClick="{{ ack.onAck }}" style="width:100%;min-height:72px;border:0;background:#f2b33d;color:#0a0c0e;cursor:pointer;font:700 24px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase">Ontvangen</button>
+        <sc-if value="{{ ack.hasMore }}" hint-placeholder-val="{{ false }}"><div style="text-align:center;font-size:13px;color:#8a949e">{{ ack.more }}</div></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isLocked }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:9;background:#0a0c0e;display:flex;flex-direction:column;padding:22px 18px 20px;gap:18px;overflow-y:auto">
+      <div style="display:flex;align-items:baseline;gap:8px"><span style="font:700 18px 'JetBrains Mono',monospace;color:#f2b33d">SAK</span><span style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8a949e">{{ lockTitle }}</span></div>
+      <div style="flex:none;display:flex;flex-direction:column;gap:4px"><div style="font-size:26px;font-weight:700;line-height:1.15">{{ meName }}</div><div style="font-size:14px;color:#8a949e">{{ meRole }} · {{ projName }}</div></div>
+      <sc-if value="{{ isStart }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;border:1px solid #232a31">
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;border-bottom:1px solid #232a31;font-size:15px"><span style="color:#8a949e">Post</span><span style="font-weight:600;text-align:right">{{ myPostName }}</span></div>
+          <div style="display:flex;justify-content:space-between;gap:10px;padding:12px;font-size:15px"><span style="color:#8a949e">Teamleider</span><span style="font-weight:600;text-align:right">{{ tlName }}</span></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasLockTasks }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;padding:12px;border:2px solid #f2d64b;background:rgba(242,214,75,.08);font-size:15px"><span style="font-family:'Material Symbols Sharp';line-height:1;font-feature-settings:'liga';font-size:24px;color:#f2d64b">campaign</span>{{ lockTasks }}</div></sc-if>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:4px">
+        <div style="font-size:15px;color:#c3cad1;text-align:center">{{ pinPrompt }}</div>
+        <div style="display:flex;gap:14px"><sc-for list="{{ pinDots }}" as="p" hint-placeholder-count="4"><span style="width:18px;height:18px;border:2px solid {{ p.bd }};background:{{ p.bg }}"></span></sc-for></div>
+        <div style="min-height:20px;font-size:14px;color:#ff5f57;text-align:center">{{ pinError }}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+        <sc-for list="{{ keys }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.onClick }}" style="min-height:64px;border:1px solid #2c343c;background:{{ k.bg }};color:#e6e9ec;cursor:pointer;font:700 {{ k.fs }} 'JetBrains Mono',monospace;display:flex;align-items:center;justify-content:center"><span style="font-family:{{ k.ff }};font-feature-settings:'liga';line-height:1">{{ k.label }}</span></button></sc-for>
+      </div>
+      <sc-if value="{{ isStart }}" hint-placeholder-val="{{ true }}">
+        <button onClick="{{ startShift }}" style="min-height:60px;border:0;background:{{ startBg }};color:#0a0c0e;cursor:pointer;font:700 18px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Start dienst</button>
+        <div style="font-size:13px;color:#6b757f;line-height:1.45;text-align:center">De pincode geldt alleen voor deze dienst. Na 2 minuten zonder gebruik vergrendelt de app.</div>
+      </sc-if>
+      <sc-if value="{{ isPinLock }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size:13px;color:#6b757f;text-align:center">Pincode vergeten? Log opnieuw in met je account.</div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:5;display:flex;align-items:flex-end">
+      <div onClick="{{ stop }}" style="width:100%;max-height:85%;overflow-y:auto;background:#12161a;border-top:2px solid {{ sh.col }};padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:10px;align-items:center"><span style="font-family:'Material Symbols Sharp';font-size:28px;line-height:1;font-feature-settings:'liga';color:{{ sh.col }}">{{ sh.icon }}</span><div style="flex:1"><div style="font:700 20px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase">{{ sh.type }}</div><div style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ sh.no }} · {{ sh.when }}</div></div></div>
+        <div style="font-size:16px;color:#c3cad1">{{ sh.where }}</div>
+        <div style="font-size:17px;line-height:1.4">{{ sh.text }}</div>
+        <sc-if value="{{ sh.hasMed }}" hint-placeholder-val="{{ false }}"><div style="border:1px solid #ff5f57;background:rgba(255,95,87,.08);padding:12px;font-size:15px;line-height:1.5"><div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#ff5f57;margin-bottom:4px">Medisch</div>{{ sh.med }}</div></sc-if>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">{{ sh.thumbs }}</div>
+        <button onClick="{{ closeSheet }}" style="min-height:52px;border:1px solid #2c343c;background:transparent;color:#e6e9ec;cursor:pointer;font-size:16px">Sluiten</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:440,&quot;height&quot;:874},&quot;startLocked&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;offline&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const TY={Vechtpartij:['sports_mma','#ff5f57'],Agressie:['report','#ff9f43'],Onwel:['medical_services','#4fd18b'],'Onveilige situatie':['warning','#f2d64b'],'Verdachte situatie':['visibility','#5cc8ff'],Diefstal:['local_mall','#c792ea'],Overlast:['campaign','#9aa4ad'],Overig:['flag','#9aa4ad']};
+const PT={Deur:['door_front','#f2b33d'],Post:['shield_person','#5cc8ff'],Bar:['local_bar','#c792ea'],EHBO:['medical_services','#4fd18b'],Nooduitgang:['exit_to_app','#ff5f57'],Meldkamer:['headset_mic','#f2d64b'],Overig:['flag','#9aa4ad']};
+const PRC={P1:'#ff5f57',P2:'#f2b33d',P3:'#5cc8ff'};
+const TSC={Uitgezet:'#f2d64b',Ontvangen:'#f2b33d',Onderweg:'#5cc8ff','Ter plaatse':'#c792ea',Afgerond:'#4fd18b'};
+const ACK_S=180;const mmss=ms=>{const s=Math.max(0,Math.round(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+const PRL={Betrokkene:'#c3cad1',Dader:'#ff5f57',Slachtoffer:'#5cc8ff',Zorgvrager:'#4fd18b',Getuige:'#9aa4ad',Melder:'#c792ea'};
+const chip=(name,on,fn,col)=>({name,bg:on?(col||'#f2b33d'):'transparent',fg:on?'#0a0c0e':'#e6e9ec',bd:on?(col||'#f2b33d'):'#2c343c',onClick:fn});
+const MF0=()=>({step:1,type:'',pos:'',text:'',prio:'P2',photos:[],medOn:false,conscious:'',breathing:'',injury:'',persons:[],asInc:false});
+class Component extends DCLogic {
+  state={d:window.SAK?window.SAK.get():null,me:'S5',proj:'PJ-SOOS',tab:'taken',regTab:'deur',plan:null,dq:'',dn:{member:true,no:''},refused:{},sq:'',msgText:'',fb:{},meldOpen:false,mf:MF0(),mpq:'',sent:null,sheet:null,lock:this.props.startLocked===false?null:'start',pin:'',pinEntry:'',pinErr:'',pinTries:0,pend:[]};
+  componentDidMount(){const hook=()=>{this.setState({d:SAK.get()});this.off=SAK.on(d=>this.setState({d}));};if(window.SAK)hook();else window.addEventListener('sak-ready',hook,{once:true});this.tick=setInterval(()=>this.forceUpdate(),1000);this.syncSel();}
+  componentWillUnmount(){this.off&&this.off();clearInterval(this.tick);}
+  componentDidUpdate(){this.syncSel();if(!this.props.offline&&this.state.pend.length){const q=this.state.pend;this.setState({pend:[]});q.forEach(fn=>SAK.set(fn));}}
+  syncSel(){requestAnimationFrame(()=>document.querySelectorAll('select[data-v]').forEach(el=>{const v=el.getAttribute('data-v');if(v!=null&&el.value!==v&&[...el.options].some(o=>o.value===v))el.value=v;}));}
+  up(fn){if(this.props.offline){this.setState(s=>({pend:[...s.pend,fn]}));return;}return SAK.set(fn);}
+  view(d){if(!d||!this.state.pend.length)return d;const x=JSON.parse(JSON.stringify(d));this.state.pend.forEach(fn=>{try{fn(x);}catch(e){}});return x;}
+  pinKey(k){this.setState(s=>{if(k==='clr')return {pinEntry:'',pinErr:''};if(k==='del')return {pinEntry:s.pinEntry.slice(0,-1),pinErr:''};if(s.pinEntry.length>=4)return null;const e=s.pinEntry+k;
+    if(s.lock==='pin'&&e.length===4){if(e===s.pin)return {lock:null,pinEntry:'',pinErr:'',pinTries:0};const n=s.pinTries+1;return n>=5?{pinEntry:'',pinTries:n,pinErr:'5 keer onjuist. Log opnieuw in met je account.'}:{pinEntry:'',pinTries:n,pinErr:'Onjuiste pincode. Nog '+(5-n)+' pogingen.'};}
+    return {pinEntry:e,pinErr:''};});}
+  renderVals(){
+    const s=this.state,d=this.view((window.SAK&&SAK.get())||s.d);if(!d)return {ready:false,tabsL:[],tabsR:[],keys:[],pinDots:[]};
+    const H=SAK.h,ss=p=>this.setState(p),o={ready:true},now=Date.now();
+    const pj=d.projects.find(p=>p.id===s.proj)||d.projects[0],client=pj.client,personBy=Object.fromEntries(d.persons.map(p=>[p.id,p])),posBy=Object.fromEntries(d.positions.map(p=>[p.id,p])),who=id=>H.who(d,id);
+    const img=(src,st)=>React.createElement('img',{src,style:{display:'block',...st}});
+    const thumbs=(arr,sz)=>(arr||[]).map((src,k)=>React.createElement('img',{key:k,src,style:{width:sz||64,height:sz||64,objectFit:'cover',border:'1px solid #2c343c'}}));
+    const where=r=>r.pos&&posBy[r.pos]?posBy[r.pos].name:(r.loc||'Locatie onbekend');
+    const meName=who(s.me),myPost=d.positions.find(p=>p.staff.includes(s.me));
+    o.me=s.me;o.meOpts=d.staff.map(p=>({id:p.id,label:p.name+' · '+((d.roles.find(r=>r.id===p.role)||{}).name||'')}));o.onMe=e=>ss({me:e.target.value});
+    o.proj=s.proj;o.projOpts=d.projects.map(p=>({id:p.id,label:(d.clients.find(c=>c.id===p.client)||{}).name+' · '+p.name}));o.onProj=e=>ss({proj:e.target.value,plan:null});
+    o.myPos=myPost?myPost.name.split(' · ')[0]:'';o.projName=pj.name;
+    const bAct=d.bolos.filter(b=>b.status==='Actief'&&(b.project===pj.id||(b.scope==='org'&&b.client===client)));
+    o.hasBoloAlert=bAct.length>0&&!(s.tab==='reg'&&s.regTab==='bolo');o.boloAlert=bAct[0]?{title:bAct[0].no+' · '+bAct[0].title,desc:bAct[0].desc}:{};o.toBolo=()=>ss({tab:'reg',regTab:'bolo'});
+
+    // taken
+    const myT=[];[['incidents',d.incidents],['reports',d.reports]].forEach(([c,arr])=>arr.forEach(i=>(i.tasks||[]).forEach((t,k)=>{if(t.to.includes(s.me)&&t.status!=='Afgerond')myT.push({c,i,t,k});})));
+    const tlP=d.staff.find(p=>p.role==='R-TL'),tlName=tlP?tlP.name:'teamleider',sentAt=t=>(t.times||{}).Uitgezet||t.ts;
+    const ackFn=(c,i,k,by,text)=>{const tid=i.tasks[k].id;this.up(x=>{const z=x[c].find(q=>q.id===i.id),q=z&&z.tasks.find(y=>y.id===tid);if(!q||q.status!=='Uitgezet')return;q.status='Ontvangen';q.times=q.times||{};q.times.Ontvangen=Date.now();q.ack={by,ts:Date.now()};q.feedback.push({ts:Date.now(),by,text});(z.log=z.log||[]).push({ts:Date.now(),by,text:t0(q)+': '+text});});};
+    const t0=q=>q.title;
+    const unack=myT.filter(x=>x.t.status==='Uitgezet').sort((a,b)=>sentAt(a.t)-sentAt(b.t));
+    o.hasAck=unack.length>0&&!s.lock;
+    if(unack.length){const {c,i,t,k}=unack[0],el=now-sentAt(t),esc=el>ACK_S*1000,mm=i.medical;
+      o.ack={band:esc?'#ff5f57':'#f2d64b',clock:esc?'+'+mmss(el-ACK_S*1000):mmss(ACK_S*1000-el),incNo:i.no,from:'Meldkamer',at:H.time(sentAt(t)),title:t.title,inc:i.title||(i.type+' · '+i.text),where:where(c==='incidents'?(d.reports.find(r=>r.id===i.report)||i):i),
+        hasMed:!!(mm&&mm.has),med:mm?[mm.conscious&&'Bij bewustzijn: '+mm.conscious,mm.breathing&&'Ademhaling: '+mm.breathing,mm.injury].filter(Boolean).join(' · '):'',escalated:esc,tl:tlName,
+        onAck:()=>ackFn(c,i,k,s.me,'Ontvangen'),hasMore:unack.length>1,more:unack.length>1?'Daarna nog '+(unack.length-1)+' nieuwe opdracht'+(unack.length>2?'en':''):''};} else o.ack={};
+    o.lockTasks=unack.length?unack.length+' nieuwe opdracht'+(unack.length>1?'en':'')+' · ontgrendel om te bevestigen':'';o.hasLockTasks=!!unack.length&&s.lock==='pin';
+    o.noTasks=!myT.length;
+    o.myTasks=myT.map(({c,i,t,k})=>{const setT=fn=>this.up(x=>{const z=x[c].find(q=>q.id===i.id),q=z&&z.tasks.find(y=>y.id===t.id);if(q)fn(q,z);});const fv=s.fb[t.id]||'';const m=i.medical;
+      return {incNo:i.no,title:t.title,inc:i.title||(i.type+' · '+i.text),status:t.status,col:TSC[t.status],hasMed:!!(m&&m.has),med:m?[m.conscious&&'Bij bewustzijn: '+m.conscious,m.breathing&&'Ademhaling: '+m.breathing,m.injury,m.treated,m.notes].filter(Boolean).join(' · '):'',
+        steps:['Onderweg','Ter plaatse','Afgerond'].map(v=>chip(v,t.status===v,()=>setT((q,z)=>{q.status=v;q.times=q.times||{};q.times[v]=Date.now();q.feedback.push({ts:Date.now(),by:s.me,text:'Status → '+v});(z.log=z.log||[]).push({ts:Date.now(),by:s.me,text:t.title+': '+v});}),TSC[v])),
+        fb:fv,onFb:e=>ss({fb:{...s.fb,[t.id]:e.target.value}}),addFb:()=>{if(!fv.trim())return;setT(q=>{q.feedback.push({ts:Date.now(),by:s.me,text:fv.trim()});});ss({fb:{...s.fb,[t.id]:''}});},
+        feedback:t.feedback.slice(-3).map(f=>({when:H.time(f.ts),by:who(f.by),text:f.text}))};});
+    const reps=d.reports.filter(r=>r.project===pj.id);
+    const uns=reps.filter(r=>r.type==='Onveilige situatie'&&['Nieuw','Open','In behandeling'].includes(r.status));o.noUnsafe=!uns.length;
+    o.unsafe=uns.map(r=>({where:where(r),text:r.text,ago:H.ago(r.ts),thumbs:thumbs(r.photos,56),resolve:()=>this.up(x=>{const z=x.reports.find(q=>q.id===r.id);z.status='Opgelost';z.resolved={by:s.me,ts:Date.now(),note:''};})}));
+    o.openReports=reps.filter(r=>r.type!=='Onveilige situatie'&&['Nieuw','In behandeling','Omgezet'].includes(r.status)&&now-r.ts<6*36e5).sort((a,b)=>b.ts-a.ts).map(r=>{const [icon,col]=TY[r.type]||TY.Overig;return {icon,col,type:r.type,ago:H.ago(r.ts),where:where(r),text:r.text,prioCol:PRC[r.prio],hasMed:!!(r.medical&&r.medical.has),onClick:()=>ss({sheet:r.id})};});
+    const shR=s.sheet&&d.reports.find(r=>r.id===s.sheet);o.hasSheet=!!shR;
+    if(shR){const [icon,col]=TY[shR.type]||TY.Overig,m=shR.medical;o.sh={icon,col,type:shR.type,no:shR.no,when:H.when(shR.ts),where:where(shR),text:shR.text,hasMed:!!(m&&m.has),med:m?[m.conscious&&'Bij bewustzijn: '+m.conscious,m.breathing&&'Ademhaling: '+m.breathing,m.injury&&'Letsel: '+m.injury,m.treated&&'Behandeling: '+m.treated,m.notes].filter(Boolean).join(' · '):'',thumbs:thumbs(shR.photos,80)};} else o.sh={};
+    o.closeSheet=()=>ss({sheet:null});o.stop=e=>e.stopPropagation();
+
+    // kaart
+    const plans=d.plans.filter(p=>p.owner===pj.id||p.owner===client).sort((a,b)=>a.order-b.order),cur=plans.find(p=>p.id===s.plan)||plans[0];
+    o.planTabs=plans.map(p=>{const on=cur&&p.id===cur.id;return {name:p.name,bg:on?'#f2b33d':'#12161a',fg:on?'#0a0c0e':'#e6e9ec',bd:on?'#f2b33d':'#2c343c',onClick:()=>ss({plan:p.id})};});
+    o.noPlan=!cur;o.hasPlan=!!cur;o.planImg=cur?img(cur.src,{width:'100%',height:'auto'}):null;
+    o.markers=cur?cur.markers.map(m=>{const p=posBy[m.pos];if(!p)return null;const [icon,col]=PT[p.type]||PT.Overig,mine=p.staff.includes(s.me);return {left:m.x+'%',top:m.y+'%',icon,col,name:p.name.split(' · ')[0],size:mine?'26px':'20px',ring:mine?'0 0 0 2px #0a0c0e, 0 0 0 4px #f2b33d':'0 0 0 2px #0a0c0e',fg:mine?'#f2b33d':'#e6e9ec'};}).filter(Boolean):[];
+    const planOf=pid=>plans.find(pl=>pl.markers.some(m=>m.pos===pid));
+    o.posts=d.positions.filter(p=>p.owner===pj.id||p.owner===client).map(p=>{const [icon,col]=PT[p.type]||PT.Overig,mine=p.staff.includes(s.me),pl=planOf(p.id);return {icon,col,name:p.name,staff:p.staff.map(who).join(', ')||'Onbezet',plan:pl?pl.name:'',bd:mine?'#f2b33d':'#232a31'};});
+
+    // berichten
+    o.msgRows=d.messages.slice(-40).map(m=>{const mine=m.from===s.me;return {from:who(m.from),when:H.time(m.ts),text:m.text,align:mine?'flex-end':'flex-start',bg:mine?'rgba(242,179,61,.1)':'#12161a',col:m.from==='MK'?'#f2b33d':'#5cc8ff'};});
+    const send=t=>this.up(x=>{x.messages.push({id:SAK.uid('MS'),ts:Date.now(),from:s.me,text:t});});
+    o.msgText=s.msgText;o.onMsg=e=>ss({msgText:e.target.value});o.sendMsg=()=>{if(!s.msgText.trim())return;send(s.msgText.trim());ss({msgText:''});};o.onMsgKey=e=>{if(e.key==='Enter')o.sendMsg();};
+    o.quickMsgs=['Op post','Rustig','Assistentie nodig','Pauze'].map(t=>({text:t,onClick:()=>send(t+(myPost?' · '+myPost.name:''))}));
+
+    // registers
+    o.regTabs=[['deur','Deur'],['bolo','BOLO'],['sanc','Sancties'],['inc','Incid.']].map(([id,n])=>({name:n,bg:s.regTab===id?'#f2b33d':'transparent',fg:s.regTab===id?'#0a0c0e':'#c3cad1',onClick:()=>ss({regTab:id})}));
+    o.isDeur=s.regTab==='deur';o.isRBolo=s.regTab==='bolo';o.isRSanc=s.regTab==='sanc';o.isRInc=s.regTab==='inc';
+    const dq=s.dq.trim().toLowerCase();o.dq=s.dq;o.onDq=e=>ss({dq:e.target.value});o.deurHint=dq.length<2;
+    const found=dq.length<2?[]:d.persons.filter(p=>p.client===client&&(p.name.toLowerCase().includes(dq)||(p.memberNo||'').toLowerCase().includes(dq))).slice(0,4);
+    o.deurRows=found.map(p=>{const st=H.status(d,p.id,pj.id),red=st.level>=3,amber=st.level>0&&!red;
+      return {desc:p.desc||'',hasDesc:!!p.desc,name:p.name,member:p.member?'Lid · '+(p.memberNo||'—'):'Niet-lid',photo:p.photo?img(p.photo,{width:56,height:56,objectFit:'cover'}):null,col:red?'#ff5f57':amber?'#f2b33d':'#4fd18b',band:red?'rgba(255,95,87,.14)':amber?'rgba(242,179,61,.12)':'rgba(79,209,139,.1)',icon:red?'block':amber?'warning':'check_circle',
+        verdict:red?'Geen toegang':amber?'Let op':'Toegang',reason:st.level?st.label+(st.top&&st.top.scope==='org'?' · hele organisatie':''):'Geen actieve sancties',
+        history:d.sanctions.filter(sn=>sn.person===p.id).slice(-3).map(sn=>({text:H.sancText(sn)+(H.isActive(sn)?'':' (verlopen)'),col:H.isActive(sn)?'#ff5f57':'#6b757f'})),
+        refused:!!s.refused[p.id],
+        refuse:()=>{this.up(x=>{x.sanctions.push({id:SAK.uid('SN'),person:p.id,incident:null,type:'Geweigerd',amount:0,paid:false,from:Date.now(),until:Date.now()+12*36e5,scope:'project',project:pj.id,client,reason:'Geweigerd aan de deur door '+meName,by:s.me,ts:Date.now()});});ss({refused:{...s.refused,[p.id]:true}});},
+        incident:()=>ss({meldOpen:true,mf:{...MF0(),step:1,persons:[{person:p.id,role:'Dader'}],asInc:true,pos:myPost?myPost.id:''},sent:null})};});
+    o.deurNew=dq.length>=2&&!found.length;const dn=s.dn;o.dn=dn;o.dnKinds=[chip('Lid',dn.member,()=>ss({dn:{...dn,member:true}})),chip('Niet-lid',!dn.member,()=>ss({dn:{...dn,member:false}}))];o.onDnNo=e=>ss({dn:{...dn,no:e.target.value.toUpperCase()}});
+    o.addDeurPerson=()=>{const id=SAK.uid('PS'),nm=s.dq.trim();this.up(x=>{x.persons.push({id,name:nm,member:dn.member,memberNo:dn.member?dn.no:'',client,desc:'',photo:null});});ss({dn:{member:true,no:''}});};
+    const bAll=d.bolos.filter(b=>b.project===pj.id||(b.scope==='org'&&b.client===client)).sort((a,b)=>(a.status==='Actief'?0:1)-(b.status==='Actief'?0:1)||b.ts-a.ts);o.noBolo=!bAct.length;
+    o.bolos=bAll.slice(0,6).map(b=>{const act=b.status==='Actief';return {no:b.no,status:b.status,title:b.title,desc:b.desc,ago:H.ago(b.ts),col:act?'#ff5f57':'#5b646d',op:act?1:.55,active:act,photo:b.photo?img(b.photo,{width:'100%',maxHeight:260,objectFit:'cover'}):null,
+      seen:()=>{this.up(x=>{x.messages.push({id:SAK.uid('MS'),ts:Date.now(),from:s.me,text:b.no+' GEZIEN'+(myPost?' bij '+myPost.name:'')+'. Graag instructie.'});const i=x.incidents.find(q=>q.id===b.incident);if(i)i.log.push({ts:Date.now(),by:s.me,text:b.no+' gezien'+(myPost?' bij '+myPost.name:'')+'.'});});ss({tab:'ber'});}};});
+    const sq=s.sq.trim().toLowerCase();o.sq=s.sq;o.onSq=e=>ss({sq:e.target.value});
+    o.sancs=d.sanctions.filter(sn=>H.isActive(sn)&&H.applies(sn,pj.id,client)).filter(sn=>{const p=personBy[sn.person]||{};return !sq||(p.name+' '+(p.memberNo||'')).toLowerCase().includes(sq);}).map(sn=>{const p=personBy[sn.person]||{};return {name:p.name,member:p.member?p.memberNo:'niet-lid',text:H.sancText(sn),scope:sn.scope==='org'?'Organisatie':'Project',col:sn.type==='Boete'?'#f2b33d':'#ff5f57'};});
+    o.incs=d.incidents.filter(i=>i.project===pj.id||(i.scope==='org'&&i.client===client)).sort((a,b)=>b.ts-a.ts).map(i=>({no:i.no,title:i.title,status:i.status,stCol:i.status==='Afgesloten'?'#5b646d':'#5cc8ff',when:H.when(i.ts),persons:i.persons.map(x=>(personBy[x.person]||{}).name).join(', ')||'geen betrokkenen'}));
+
+    // teamleider
+    const meP=d.staff.find(p=>p.id===s.me)||{};o.isTL=meP.role==='R-TL';
+    if(o.isTL){const all=[];[['incidents',d.incidents],['reports',d.reports]].forEach(([c,arr])=>arr.forEach(i=>{if(i.project!==pj.id)return;(i.tasks||[]).forEach((t,k)=>all.push({c,i,t,k}));}));
+      o.escTasks=all.filter(x=>x.t.status==='Uitgezet'&&now-sentAt(x.t)>ACK_S*1000&&!x.t.to.includes(s.me)).map(({c,i,t,k})=>({title:t.title,who:t.to.map(who).join(', '),incNo:i.no,elapsed:mmss(now-sentAt(t)),
+        viaRadio:()=>ackFn(c,i,k,s.me,'Ontvangst bevestigd via portofoon door teamleider'),
+        takeOver:()=>this.up(x=>{const z=x[c].find(q=>q.id===i.id),q=z&&z.tasks.find(y=>y.id===t.id);if(!q)return;if(!q.to.includes(s.me))q.to.push(s.me);q.status='Ontvangen';q.times=q.times||{};q.times.Ontvangen=Date.now();q.ack={by:s.me,ts:Date.now()};q.feedback.push({ts:Date.now(),by:s.me,text:'Overgenomen door teamleider'});(z.log=z.log||[]).push({ts:Date.now(),by:s.me,text:q.title+': overgenomen door teamleider'});})}));
+      const ids=[...new Set(d.positions.filter(p=>p.owner===pj.id).flatMap(p=>p.staff))].filter(id=>id!==s.me);
+      o.teamRows=ids.map(id=>{const post=d.positions.find(p=>p.owner===pj.id&&p.staff.includes(id)),open=all.filter(x=>x.t.to.includes(id)&&x.t.status!=='Afgerond').sort((a,b)=>sentAt(b.t)-sentAt(a.t))[0],st=open?open.t.status:'Vrij',esc=open&&st==='Uitgezet'&&now-sentAt(open.t)>ACK_S*1000;
+        return {name:who(id),post:(post?post.name:'Geen post')+(open?' · '+open.t.title:''),status:esc?'Niet bevestigd':st,col:esc?'#ff5f57':open?TSC[st]:'#4fd18b'};});} else {o.escTasks=[];o.teamRows=[];}
+    // dienst / pincode
+    o.meName=meName;o.meRole=(d.roles.find(r=>r.id===meP.role)||{}).name||'';o.myPostName=myPost?myPost.name:'Geen vaste post';o.tlName=tlName;
+    o.isLocked=!!s.lock;o.isStart=s.lock==='start';o.isPinLock=s.lock==='pin';o.lockTitle=s.lock==='start'?'Dienst starten':'Vergrendeld';
+    o.pinPrompt=s.lock==='start'?'Kies een pincode van 4 cijfers voor deze dienst':'Voer je pincode in';o.pinError=s.pinErr;
+    o.pinDots=[0,1,2,3].map(n=>{const on=n<s.pinEntry.length;return {bg:on?'#f2b33d':'transparent',bd:on?'#f2b33d':'#3a434c'};});
+    const kk=(label,k,icon)=>({label,fs:icon?'26px':'26px',ff:icon?"'Material Symbols Sharp'":"'JetBrains Mono',monospace",bg:'#12161a',onClick:()=>this.pinKey(k)});
+    o.keys=['1','2','3','4','5','6','7','8','9'].map(n=>kk(n,n)).concat([kk('close','clr',true),kk('0','0'),kk('backspace','del',true)]);
+    o.startBg=s.pinEntry.length===4?'#f2b33d':'#5b646d';o.startShift=()=>{if(s.pinEntry.length===4)ss({pin:s.pinEntry,pinEntry:'',lock:null,pinTries:0});};
+    o.lockNow=()=>ss({lock:s.pin?'pin':'start',pinEntry:'',pinErr:''});
+    // verbinding
+    o.offline=!!this.props.offline;o.connCol=o.offline?'#f2b33d':'#4fd18b';o.connLabel=o.offline?'OFFLINE':'ONLINE';o.connTitle=o.offline?'Geen verbinding':'Verbonden';
+    o.queueText=s.pend.length?s.pend.length+' wijziging'+(s.pend.length>1?'en':'')+' in de wachtrij. Ze gaan automatisch mee zodra er weer verbinding is.':'Wat je nu doet, gaat in de wachtrij en wordt verstuurd zodra er weer verbinding is.';
+    // tabs
+    const tab=(id,icon,label,n)=>({icon,label,n,hasN:!!n,fg:s.tab===id?'#f2b33d':'#8a949e',onClick:()=>ss({tab:id})});
+    o.tabsL=[tab('taken','task_alt','Taken',myT.length+uns.length),tab('kaart','map','Kaart')];
+    o.tabsR=[tab('ber','forum','Berichten'),tab('reg','gavel','Registers',bAct.length)];
+    o.isTaken=s.tab==='taken';o.isKaart=s.tab==='kaart';o.isBer=s.tab==='ber';o.isReg=s.tab==='reg';
+
+    // melden
+    const mf=s.mf,setMf=p=>this.setState(st=>({mf:{...st.mf,...p}}));o.mf=mf;o.meldOpen=s.meldOpen;
+    o.openMeld=()=>ss({meldOpen:true,mf:{...MF0(),pos:myPost?myPost.id:''},sent:null,mpq:''});
+    o.step1=!s.sent&&mf.step===1;o.step2=!s.sent&&mf.step===2;o.step3=!!s.sent;
+    o.meldTitle=s.sent?'Verzonden':mf.step===1?'Wat wil je melden?':mf.type;o.backIcon=mf.step===2&&!s.sent?'arrow_back':'close';
+    o.meldBack=()=>{if(mf.step===2&&!s.sent)setMf({step:1});else ss({meldOpen:false});};o.closeMeld=()=>ss({meldOpen:false,sent:null});
+    o.typeBtns=Object.keys(TY).map(t=>({name:t,icon:TY[t][0],col:TY[t][1],onClick:()=>setMf({type:t,step:2,prio:t==='Vechtpartij'?'P1':t==='Onveilige situatie'?'P3':'P2',medOn:mf.medOn||t==='Onwel'})}));
+    o.posBtns=d.positions.filter(p=>p.owner===pj.id||p.owner===client).map(p=>chip(p.name.split(' · ')[0],mf.pos===p.id,()=>setMf({pos:mf.pos===p.id?'':p.id})));
+    o.onMfText=e=>setMf({text:e.target.value});
+    o.onMfPhoto=e=>{const fs=[...(e.target.files||[])];e.target.value='';Promise.all(fs.map(f=>SAK.downscale(f,1100))).then(src=>this.setState(st=>({mf:{...st.mf,photos:[...st.mf.photos,...src]}})));};
+    o.mfThumbs=thumbs(mf.photos,52);
+    o.prioBtns=[['P1','Spoed'],['P2','Snel'],['P3','Normaal']].map(([p,l])=>chip(l,mf.prio===p,()=>setMf({prio:p}),PRC[p]));
+    o.toggleMed=()=>setMf({medOn:!mf.medOn});o.medBg=mf.medOn?'#ff5f57':'transparent';o.medFg=mf.medOn?'#0a0c0e':'#ff5f57';
+    o.mConsc=['Ja','Nee','Wisselend'].map(v=>chip(v,mf.conscious===v,()=>setMf({conscious:v}),v==='Ja'?'#4fd18b':'#ff5f57'));
+    o.mBreath=['Normaal','Moeizaam','Geen'].map(v=>chip(v,mf.breathing===v,()=>setMf({breathing:v}),v==='Normaal'?'#4fd18b':'#ff5f57'));
+    o.onMfInjury=e=>setMf({injury:e.target.value});
+    const roles=Object.keys(PRL);
+    o.mfPersons=mf.persons.map((x,k)=>{const p=personBy[x.person]||{name:'?'};return {name:p.name,member:p.member?p.memberNo:'niet-lid',role:x.role,col:PRL[x.role],cycleRole:()=>{const a=[...mf.persons];a[k]={...x,role:roles[(roles.indexOf(x.role)+1)%roles.length]};setMf({persons:a});},remove:()=>setMf({persons:mf.persons.filter((_,j)=>j!==k)})};});
+    const mpq=s.mpq.trim().toLowerCase();o.mpq=s.mpq;o.onMpq=e=>ss({mpq:e.target.value});
+    const inMf=new Set(mf.persons.map(x=>x.person));
+    o.mpqRows=mpq.length<2?[]:d.persons.filter(p=>p.client===client&&!inMf.has(p.id)&&(p.name.toLowerCase().includes(mpq)||(p.memberNo||'').toLowerCase().includes(mpq))).slice(0,4).map(p=>{const st=H.status(d,p.id,pj.id);return {name:p.name+(p.member?' · '+p.memberNo:''),st:st.level?st.label:'',col:st.col,onClick:()=>{setMf({persons:[...mf.persons,{person:p.id,role:'Betrokkene'}]});ss({mpq:''});}};});
+    o.mpqNew=mpq.length>=2;o.addMpNew=()=>{const id=SAK.uid('PS'),nm=s.mpq.trim();this.up(x=>{x.persons.push({id,name:nm,member:false,memberNo:'',client,desc:'',photo:null});});setMf({persons:[...mf.persons,{person:id,role:'Betrokkene'}]});ss({mpq:''});};
+    o.toggleAsInc=()=>setMf({asInc:!mf.asInc});o.asIncIcon=mf.asInc?'check_box':'check_box_outline_blank';o.asIncCol=mf.asInc?'#f2b33d':'#8a949e';
+    const canSend=!!(mf.text.trim()||mf.photos.length);o.sendBg=canSend?'#f2b33d':'#5b646d';o.sendLabel=mf.asInc?'Incident registreren':'Melding versturen';
+    o.sendMeld=()=>{if(!canSend)return;const med=mf.medOn?{has:true,conscious:mf.conscious,breathing:mf.breathing,injury:mf.injury,treated:'',notes:''}:null;let no='';
+      this.up(x=>{const n=H.next(x,'M'),rid='M'+n;no='M-'+n;const r={id:rid,no,ts:Date.now(),src:'medewerker',by:s.me,type:mf.type,prio:mf.prio,project:pj.id,pos:mf.pos||null,loc:'',text:mf.text.trim(),photos:mf.photos,medical:med,persons:mf.persons,status:mf.type==='Onveilige situatie'?'Open':'Nieuw'};
+        if(mf.asInc){const k=H.next(x,'INC'),iid='INC'+k;no='INC-'+new Date().getFullYear()+'-'+String(k).padStart(4,'0');x.incidents.push({id:iid,no,ts:Date.now(),title:mf.type+(mf.pos&&posBy[mf.pos]?' · '+posBy[mf.pos].name:''),type:mf.type==='Onveilige situatie'?'Overig':mf.type,status:'Open',scope:'project',project:pj.id,client,report:rid,toedracht:mf.text.trim(),medical:med,persons:mf.persons.map(q=>({person:q.person,role:q.role,injury:'',statement:''})),tasks:[],reportReq:['Vechtpartij','Agressie','Diefstal'].includes(mf.type),rapport:{text:'',by:s.me,done:false},log:[{ts:Date.now(),by:s.me,text:'Incident geregistreerd via mobiel.'}],photos:[...mf.photos],bolo:null});r.status='Omgezet';r.incident=iid;}
+        x.reports.push(r);});
+      ss({sent:{no,asInc:mf.asInc}});};
+    o.sentTitle=s.sent?(s.sent.asInc?'Incident geregistreerd':'Melding verstuurd'):'';o.sentText=s.sent?(this.props.offline?'Staat in de wachtrij. Wordt verstuurd zodra er weer verbinding is.':s.sent.no+' staat bij de meldkamer.'):'';
+    return o;
+  }
+}
+</script>
+</body>
+</html>

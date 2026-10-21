@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<style>
+html,body{margin:0;min-height:100%;background:#f3f1ec;color:#16191c;font-family:Barlow,system-ui,sans-serif}
+*{box-sizing:border-box}
+a{color:#16191c}a:hover{color:#b5651d}
+button,input,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#8a8f94}
+</style>
+<script src="./sak-store.js"></script>
+<script src="./image-slot.js"></script>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<div style="height:6px;background:{{ accent }};flex:none"></div>
+<div style="width:100%;max-width:480px;margin:0 auto;padding:18px 16px 40px;display:flex;flex-direction:column;gap:22px">
+
+  <div style="display:flex;align-items:center;gap:12px">
+    <image-slot id="publiek-logo" shape="rect" fit="contain" placeholder="Logo" style="width:52px;height:52px;flex:none;background:#fff;border:1px solid #d6d2ca"></image-slot>
+    <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+      <span style="font:700 15px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">{{ orgName }}</span>
+      <span style="font-size:13px;color:#6a6f74">{{ projName }}</span>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <h1 style="margin:0;font:700 32px/1.02 'Barlow Condensed',sans-serif;letter-spacing:.02em;text-transform:uppercase;text-wrap:balance">{{ copy.h1 }}</h1>
+    <div style="font-size:16px;line-height:1.45;color:#4a4f54;text-wrap:pretty">{{ copy.intro }}</div>
+  </div>
+
+  <a href="tel:112" style="display:flex;align-items:center;gap:12px;padding:14px;background:#16191c;color:#fff;text-decoration:none;font-size:16px"><span style="font-family:'Material Symbols Sharp';font-size:26px;line-height:1;font-feature-settings:'liga';color:#ff6b5e">call</span><span style="flex:1">Levensgevaar? Bel eerst <strong>112</strong>.</span><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga';color:#8a8f94">chevron_right</span></a>
+
+  <sc-if value="{{ form }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6a6f74">Zo werkt het</div>
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:8px;padding:12px 10px;background:#fff;border:1px solid #d6d2ca">
+            <span style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:{{ accent }};color:#fff;font:700 15px 'Barlow Condensed',sans-serif">{{ st.n }}</span>
+            <span style="font-size:14px;font-weight:600;line-height:1.3">{{ st.title }}</span>
+            <span style="font-size:13px;line-height:1.35;color:#6a6f74">{{ st.text }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase">1 · Wat is er aan de hand?</div>
+        <div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ types }}" as="t" hint-placeholder-count="6"><button onClick="{{ t.onClick }}" style="min-height:64px;display:flex;align-items:center;gap:12px;border:2px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};padding:10px 12px;cursor:pointer;text-align:left"><span style="font-family:'Material Symbols Sharp';font-size:26px;line-height:1;font-feature-settings:'liga';flex:none">{{ t.icon }}</span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:16px;font-weight:700">{{ t.label }}</span><span style="font-size:13px;line-height:1.35;color:{{ t.sub }}">{{ t.example }}</span></span></button></sc-for></div>
+        <div style="font-size:13px;line-height:1.45;color:#6a6f74">{{ copy.notFor }}</div>
+      </div>
+      <label style="display:flex;flex-direction:column;gap:6px"><span style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase">2 · Waar?</span><input value="{{ loc }}" onChange="{{ onLoc }}" placeholder="Bijv. bij de bar, toiletten, ingang" style="min-height:50px;border:2px solid #d6d2ca;background:#fff;color:#16191c;padding:10px 12px;font-size:16px"></input></label>
+      <label style="display:flex;flex-direction:column;gap:6px"><span style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase">3 · Wat zie je?</span><textarea value="{{ text }}" onChange="{{ onText }}" rows="4" placeholder="Wat gebeurt er, hoeveel mensen, hoe zien ze eruit?" style="border:2px solid #d6d2ca;background:#fff;color:#16191c;padding:10px 12px;font-size:16px;resize:vertical"></textarea></label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">{{ thumbs }}<label style="min-height:50px;display:flex;align-items:center;gap:8px;border:2px solid #d6d2ca;background:#fff;padding:0 16px;cursor:pointer;font-size:15px;font-weight:600"><input type="file" accept="image/*" capture="environment" multiple onChange="{{ onPhoto }}" style="display:none"></input><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga'">photo_camera</span>Foto toevoegen (mag)</label></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase">4 · Mogen we je terugbellen?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><sc-for list="{{ anonBtns }}" as="b" hint-placeholder-count="2"><button onClick="{{ b.onClick }}" style="min-height:52px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:15px;font-weight:600">{{ b.label }}</button></sc-for></div>
+        <sc-if value="{{ withContact }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:8px"><input value="{{ name }}" onChange="{{ onName }}" placeholder="Voornaam" style="min-height:50px;border:2px solid #d6d2ca;background:#fff;color:#16191c;padding:10px 12px;font-size:16px"></input><input value="{{ phone }}" onChange="{{ onPhone }}" type="tel" placeholder="06-nummer" style="min-height:50px;border:2px solid #d6d2ca;background:#fff;color:#16191c;padding:10px 12px;font-size:16px"></input></div>
+        </sc-if>
+        <div style="font-size:13px;color:#6a6f74">{{ anonNote }}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onClick="{{ send }}" style="min-height:60px;border:0;background:{{ sendBg }};color:#fff;cursor:pointer;font:700 18px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Melding versturen</button>
+        <sc-if value="{{ showMissing }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#6a6f74;text-align:center">{{ missing }}</div></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:22px 10px 6px;text-align:center"><span style="font-family:'Material Symbols Sharp';font-size:64px;line-height:1;font-feature-settings:'liga';color:#2f9e5f">check_circle</span><div style="font:700 28px 'Barlow Condensed',sans-serif;text-transform:uppercase">{{ copy.doneTitle }}</div><div style="font:600 14px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#6a6f74">Meldnummer {{ doneNo }}</div></div>
+      <div style="display:flex;flex-direction:column;background:#fff;border:1px solid #d6d2ca">
+        <sc-for list="{{ after }}" as="a" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;padding:14px;border-bottom:1px solid #ebe8e1"><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga';color:{{ accent }};flex:none">{{ a.icon }}</span><span style="font-size:15px;line-height:1.4">{{ a.text }}</span></div>
+        </sc-for>
+      </div>
+      <button onClick="{{ again }}" style="min-height:52px;padding:0 20px;border:2px solid #16191c;background:transparent;cursor:pointer;font-size:15px;font-weight:600">Nog iets melden</button>
+    </div>
+  </sc-if>
+
+  <div style="display:flex;flex-direction:column;gap:10px;padding-top:6px;border-top:1px solid #d6d2ca">
+    <div style="font:700 13px 'Barlow Condensed',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#6a6f74;padding-top:14px">Wat we met je melding doen</div>
+    <sc-for list="{{ privacy }}" as="p" hint-placeholder-count="4">
+      <div style="display:flex;gap:10px;font-size:14px;line-height:1.45;color:#4a4f54"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1.3;font-feature-settings:'liga';color:#6a6f74;flex:none">{{ p.icon }}</span><span>{{ p.text }}</span></div>
+    </sc-for>
+  </div>
+
+  <div style="font-size:12px;color:#8a8f94;line-height:1.5">Beveiliging van {{ projName }} in opdracht van {{ orgName }}. Meldingen worden verwerkt met SAK.</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;zakelijk&quot;,&quot;vriendelijk&quot;,&quot;informeel&quot;],&quot;default&quot;:&quot;zakelijk&quot;,&quot;tsType&quot;:&quot;'zakelijk'|'vriendelijk'|'informeel'&quot;},&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[&quot;#b5361d&quot;,&quot;#1f4e8c&quot;,&quot;#2d6a4f&quot;,&quot;#16191c&quot;],&quot;default&quot;:&quot;#b5361d&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;retention&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;3 maanden&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const TYPES=[
+  ['Onveilige situatie','warning','Onveilige situatie','Glas of iets gevaarlijks op de vloer, een geblokkeerde nooduitgang'],
+  ['Vechtpartij','sports_mma','Vechtpartij of agressie','Een ruzie die uit de hand loopt, iemand die dreigt'],
+  ['Onwel','medical_services','Iemand is onwel','Flauwgevallen, te veel gedronken, gewond'],
+  ['Verdachte situatie','visibility','Verdacht of opdringerig gedrag','Iemand die blijft lastigvallen, iets in een drankje doet, een achtergelaten tas'],
+  ['Overlast','campaign','Overlast','Duwen bij de bar, wildplassen, iemand die anderen hindert'],
+  ['Overig','flag','Iets anders','Je weet niet goed wat het is, maar het klopt niet']];
+const TONES={
+  zakelijk:{h1:'Zie je iets dat niet klopt? Meld het.',intro:'Je melding gaat direct naar de beveiliging van {p}. Anoniem melden kan.',notFor:'Niet voor gevonden voorwerpen of klachten over muziek en drank. Daarvoor kun je bij de garderobe of de bar terecht.',doneTitle:'Je melding is binnen',s2:'De meldkamer ziet je melding meteen en stuurt iemand.'},
+  vriendelijk:{h1:'Gaat er iets mis? Laat het ons weten.',intro:'De beveiliging van {p} leest je melding meteen en komt in actie. Je mag anoniem blijven.',notFor:'Kwijtgeraakt of een klacht over muziek of drank? Loop even langs bij de garderobe of de bar, daar helpen ze je verder.',doneTitle:'Bedankt, we zijn ermee bezig',s2:'We lezen je melding meteen en sturen iemand van de beveiliging.'},
+  informeel:{h1:'Iets niet chill? Meld het.',intro:'De crew van {p} krijgt je melding direct binnen en komt eraan. Je naam hoeft niet.',notFor:'Jas kwijt of de muziek te hard? Dat regel je bij de garderobe of de bar.',doneTitle:'Top, we zijn onderweg',s2:'De crew ziet het meteen en stuurt iemand jouw kant op.'}};
+class Component extends DCLogic {
+  state={d:window.SAK?window.SAK.get():null,type:'',loc:'',text:'',photos:[],anon:true,name:'',phone:'',done:null,tried:false};
+  componentDidMount(){const hook=()=>this.setState({d:SAK.get()});if(window.SAK)hook();else window.addEventListener('sak-ready',hook,{once:true});}
+  renderVals(){
+    const s=this.state,d=s.d,ss=p=>this.setState(p),accent=this.props.accent||'#b5361d',tone=TONES[this.props.tone]||TONES.zakelijk,keep=this.props.retention||'3 maanden';
+    const pid=(location.search.match(/[?&]p=([^&]+)/)||[])[1]||'PJ-SOOS';
+    const pj=d?(d.projects.find(p=>p.id===pid)||d.projects[0]):null,cl=d&&pj?d.clients.find(c=>c.id===pj.client):null;
+    const projName=pj?pj.name:'dit evenement',orgName=cl?cl.name:'';
+    const o={accent,orgName,projName,form:!s.done,done:!!s.done,doneNo:s.done||''};
+    o.copy={...tone,intro:tone.intro.replace('{p}',projName)};
+    o.steps=[{n:'1',title:'Je meldt',text:'Kies wat er is, waar, en beschrijf het kort.'},{n:'2',title:'Wij zien het',text:tone.s2},{n:'3',title:'Jij hoort het',text:'Wil je teruggebeld worden? Dan bellen we je.'}];
+    o.types=TYPES.map(([v,icon,label,example])=>{const on=s.type===v;return {icon,label,example,bg:on?'#16191c':'#fff',fg:on?'#fff':'#16191c',sub:on?'#c9ccd0':'#6a6f74',bd:on?'#16191c':'#d6d2ca',onClick:()=>ss({type:v})};});
+    o.loc=s.loc;o.text=s.text;o.name=s.name;o.phone=s.phone;
+    o.onLoc=e=>ss({loc:e.target.value});o.onText=e=>ss({text:e.target.value});o.onName=e=>ss({name:e.target.value});o.onPhone=e=>ss({phone:e.target.value});
+    o.onPhoto=e=>{const fs=[...(e.target.files||[])];e.target.value='';Promise.all(fs.map(f=>SAK.downscale(f,1100))).then(src=>this.setState(st=>({photos:[...st.photos,...src]})));};
+    o.thumbs=s.photos.map((src,k)=>React.createElement('img',{key:k,src,style:{width:50,height:50,objectFit:'cover',border:'2px solid #d6d2ca'}}));
+    o.anonBtns=[[true,'Nee, anoniem'],[false,'Ja, bel me terug']].map(([v,label])=>{const on=s.anon===v;return {label,bg:on?'#16191c':'#fff',fg:on?'#fff':'#16191c',bd:on?'#16191c':'#d6d2ca',onClick:()=>ss({anon:v})};});
+    o.withContact=!s.anon;o.anonNote=s.anon?'We slaan geen gegevens van je op. We kunnen je dan ook geen vragen stellen.':'Je nummer is alleen zichtbaar voor de meldkamer en wordt niet gedeeld.';
+    const miss=[!s.type&&'wat er aan de hand is',!(s.text.trim()||s.photos.length)&&'wat je ziet (of een foto)',!s.anon&&!s.phone.trim()&&'je 06-nummer'].filter(Boolean);
+    const ok=!miss.length;o.sendBg=ok?accent:'#a9a49a';o.showMissing=!ok&&s.tried;o.missing='Vul nog in: '+miss.join(', ')+'.';
+    o.send=()=>{if(!ok||!pj){ss({tried:true});return;}let no='';SAK.set(x=>{const n=SAK.h.next(x,'M');no='M-'+n;x.reports.push({id:'M'+n,no,ts:Date.now(),src:'publiek',by:null,contact:s.anon?{anon:true}:{anon:false,name:s.name.trim(),phone:s.phone.trim()},type:s.type,prio:s.type==='Vechtpartij'||s.type==='Onwel'?'P1':'P2',project:pj.id,pos:null,loc:s.loc.trim(),text:s.text.trim()||'(alleen foto)',photos:s.photos,medical:null,status:'Nieuw',tasks:[],persons:[],log:[]});});ss({done:no,tried:false});};
+    o.after=[{icon:'visibility',text:'De meldkamer heeft je melding nu op het scherm.'},{icon:'directions_run',text:'Een beveiliger gaat naar de plek die je opgaf.'},
+      {icon:s.anon?'visibility_off':'call',text:s.anon?'Je hebt anoniem gemeld. We nemen geen contact met je op.':'Heeft de beveiliging vragen? Dan bellen we je binnen een paar minuten.'},{icon:'shield',text:'Blijf op een veilige plek. Wordt het erger, bel dan 112.'}];
+    o.privacy=[{icon:'lock',text:'Alleen de beveiliging van '+(orgName||'de organisatie')+' ziet je melding.'},{icon:'visibility_off',text:'Anoniem melden? Dan slaan we geen naam, nummer of locatie van je telefoon op.'},
+      {icon:'call',text:'Laat je je nummer achter, dan gebruiken we het alleen om je over deze melding te bellen.'},{icon:'schedule',text:'We bewaren meldingen '+keep+' voor de veiligheid van het evenement. Daarna worden ze verwijderd.'}];
+    o.again=()=>ss({type:'',loc:'',text:'',photos:[],done:null,tried:false});
+    return o;
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meldkaart · Club HiFi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
+<script src="./sak-store.js"></script>
+<style>
+html,body{margin:0;background:#fff;color:#1d2b4a;font-family:Ubuntu,system-ui,sans-serif}
+*{box-sizing:border-box}
+a{color:#2c5aa0}a:hover{color:#1d2b4a}
+.ms{font-family:'Material Symbols Sharp';font-feature-settings:'liga';line-height:1;font-weight:400}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(160deg,#7fd3d6 0%,#3d6fb6 50%,#6a54aa 100%);padding:18px 0 70px}
+.hero:before{content:"";position:absolute;inset:0;background:rgba(220,228,238,.5);clip-path:polygon(0 70%,22% 92%,48% 74%,86% 50%,100% 62%,100% 100%,0 100%)}
+.hero:after{content:"";position:absolute;inset:0;background:#fff;clip-path:polygon(0 100%,38% 84%,66% 94%,100% 82%,100% 100%)}
+.hero .wrap{position:relative;z-index:1;display:flex;flex-direction:column;gap:34px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.back{display:flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;background:rgba(20,22,28,.35);color:#fff;text-decoration:none;font-weight:700;font-size:14px;text-transform:uppercase}
+.back:hover{color:#fff;background:rgba(20,22,28,.5)}
+.title{display:flex;gap:18px}
+.bar{width:10px;background:#fff;flex:none}
+h1{margin:0;font:700 48px/.95 Ubuntu,sans-serif;color:#fff;text-transform:uppercase;text-shadow:4px 4px 0 #14161c}
+.sub{font:700 20px/1.15 Ubuntu,sans-serif;color:#fff;text-transform:uppercase;text-shadow:2px 2px 0 rgba(20,22,28,.55);margin-top:8px;max-width:520px}
+.intro{font-size:17px;line-height:1.5;color:#3a4866;max-width:640px;margin:4px 0 24px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;margin-bottom:24px}
+.stat{background:#eef3f9;padding:16px}
+.stat b{display:block;font:700 40px/1 Ubuntu,sans-serif;color:#2c5aa0}
+.stat span{display:block;font-size:14px;line-height:1.35;color:#3a4866;margin-top:6px}
+.h2{display:flex;align-items:stretch;gap:10px;margin:0 0 12px}
+.h2 i{width:6px;background:#2c5aa0}
+.h2 span{font:700 20px Ubuntu,sans-serif;text-transform:uppercase}
+.filters{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+.chip{min-height:44px;padding:0 14px;border:2px solid #d5deea;background:#fff;color:#1d2b4a;cursor:pointer;font:500 14px Ubuntu,sans-serif}
+.chip[aria-pressed="true"]{background:#1d2b4a;border-color:#1d2b4a;color:#fff}
+.chip.cat[aria-pressed="true"]{background:#2c5aa0;border-color:#2c5aa0}
+#map{height:520px;border:2px solid #d5deea;background:#e9eef4}
+#map .leaflet-tile-pane{filter:saturate(.25) brightness(1.04)}
+.legend{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;color:#56637d;margin:10px 0 30px}
+.legend .sw{display:flex}
+.legend .sw span{width:30px;height:12px}
+.cnt{font:700 13px Ubuntu,sans-serif;color:#fff;text-align:center;text-shadow:1px 1px 0 rgba(20,22,28,.6)}
+.grid2{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;margin-bottom:40px}
+.list{display:flex;flex-direction:column;gap:2px}
+.item{display:flex;align-items:center;gap:14px;padding:12px 14px;background:#eef3f9;cursor:pointer;border:0;text-align:left;font:inherit;color:inherit;width:100%}
+.item:hover{background:#e2eaf4}
+.item .n{font:700 26px/1 Ubuntu,sans-serif;color:#2c5aa0;width:44px;flex:none}
+.item .t{flex:1;min-width:0}
+.item .t b{display:block;font-size:15px}
+.item .t span{display:block;font-size:13px;color:#56637d;margin-top:2px}
+.bars{display:flex;flex-direction:column;gap:10px}
+.brow{display:grid;grid-template-columns:minmax(0,1fr) 40px;gap:4px 10px;align-items:center;font-size:14px}
+.brow .track{grid-column:1/-1;height:10px;background:#eef3f9}
+.brow .track i{display:block;height:100%;background:#6a54aa}
+.brow b{text-align:right}
+.how{display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.5;color:#3a4866}
+.how div{display:flex;gap:10px}
+.how .ms{font-size:20px;color:#2c5aa0;flex:none}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;min-height:62px;background:#2c5aa0;color:#fff;text-decoration:none;font:700 20px Ubuntu,sans-serif;text-transform:uppercase;box-shadow:4px 4px 0 #14161c;margin-top:18px}
+.cta:hover{color:#fff;background:#24508f}
+.foot{background:#1d2b4a;color:#d3dae6;padding:56px 0 32px;clip-path:polygon(0 22px,34% 0,72% 30px,100% 8px,100% 100%,0 100%);font-size:12px;line-height:1.5}
+.foot .wrap{color:#8b97ab}
+.embed .hero,.embed .intro,.embed .grid2,.embed .foot,.embed .legend{display:none}.embed .wrap{max-width:none;padding:20px}.embed #map{height:calc(100vh - 250px)}
+.bgm .hero,.bgm .intro,.bgm .stats,.bgm .h2,.bgm .filters,.bgm .legend,.bgm .grid2,.bgm .foot{display:none}.bgm .wrap{max-width:none;padding:0}.bgm #map{position:fixed;inset:0;height:100vh;border:0}.bgm .leaflet-control-zoom{display:none}
+@media (max-width:720px){h1{font-size:40px}.grid2{grid-template-columns:1fr}#map{height:420px}.stat b{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="wrap">
+    <div class="top">
+      <img src="assets/logo-hifi.png" alt="Club HiFi" style="width:100px;height:64px;object-fit:contain">
+      <a class="back" href="SAK Publiek melden Club HiFi.dc.html"><span class="ms" style="font-size:20px">add_comment</span>Melden</a>
+    </div>
+    <div class="title"><div class="bar"></div><div><h1>Meldkaart</h1><div class="sub">Waar wordt rond de club overlast gemeld?</div></div></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <p class="intro">Bezoekers, leden en buurtbewoners melden hier wat ze in de club, onderweg naar huis en in de buurt meemaken. Zo zie je waar het vaak misgaat. Wordt er op een plek steeds iemand lastiggevallen, dan weet je dat je die plek beter kunt mijden. We bespreken de kaart ook met de wijkagent, zodat er vervolgacties kunnen komen. Je ziet nooit een precieze plek of een persoon, alleen hoe vaak er per blok is gemeld.</p>
+
+  <div class="stats">
+    <div class="stat"><b id="sTotal">0</b><span id="sTotalL">meldingen</span></div>
+    <div class="stat"><b id="sRoute">0</b><span>daarvan onderweg naar huis</span></div>
+    <div class="stat"><b id="sHot">0</b><span>blokken met 3 of meer meldingen</span></div>
+  </div>
+
+  <div class="h2"><i></i><span>Kaart</span></div>
+  <div class="filters">
+    <div class="row" id="fPeriod"></div>
+    <div class="row" id="fCat"></div>
+  </div>
+  <div id="map"></div>
+  <div class="legend"><span>Aantal meldingen per blok</span><span class="sw"><span style="background:#7fd3d6"></span><span style="background:#3d8fc4"></span><span style="background:#2c5aa0"></span><span style="background:#6a54aa"></span><span style="background:#a63d8f"></span></span><span id="lgMax">3 tot 20+</span><span>· Blokken met minder dan 3 meldingen tonen we niet.</span></div>
+
+  <div class="grid2">
+    <div>
+      <div class="h2"><i></i><span>Meeste meldingen</span></div>
+      <div class="list" id="hotList"></div>
+    </div>
+    <div>
+      <div class="h2"><i></i><span>Wat wordt er gemeld</span></div>
+      <div class="bars" id="catBars"></div>
+      <div class="h2" style="margin-top:28px"><i></i><span>Zo maken we het anoniem</span></div>
+      <div class="how">
+        <div><span class="ms">grid_on</span><span>Elke melding valt in een blok van ongeveer 150 bij 150 meter. Je ziet alleen het blok, nooit de plek zelf.</span></div>
+        <div><span class="ms">filter_3</span><span>Een blok verschijnt pas vanaf 3 meldingen in de gekozen periode.</span></div>
+        <div><span class="ms">person_off</span><span>Geen namen, geen tijden, geen omschrijvingen. Alleen het soort melding telt mee.</span></div>
+      </div>
+      <a class="cta" href="SAK Publiek melden Club HiFi.dc.html"><span class="ms" style="font-size:24px">add_comment</span>Zelf iets melden</a>
+    </div>
+  </div>
+</div>
+
+<div class="foot"><div class="wrap">Beveiliging van Club HiFi. Meldingen worden verwerkt met SAK. Kaart © Esri, HERE, Garmin, © OpenStreetMap contributors.</div></div>
+
+<script>
+(function(){
+if(/[?&]embed/.test(location.search))document.body.classList.add('embed');
+const BG=/[?&]bg/.test(location.search);if(BG)document.body.classList.add('bgm');
+const CLUB=[52.1578,4.4862],DLAT=0.00135,DLNG=0.00219,MIN=3,DAY=864e5;
+const CATS=[['Lastiggevallen','Lastiggevallen of aangeraakt'],['Nageroepen of gevolgd','Nageroepen of gevolgd'],['Iets in een drankje','Iets in een drankje'],['Ruzie of agressie','Ruzie of agressie'],['Onveilige situatie','Onveilige situatie'],['Overlast in de buurt','Overlast in de buurt'],['Iets anders','Iets anders']];
+const PERIODS=[[30,'Laatste 30 dagen'],[90,'Laatste 3 maanden'],[365,'Laatste 12 maanden']];
+// Voorbeelddata: plekken op looproutes vanaf de club (prototype)
+const HOT=[[52.1590,4.4878,'Breestraat',1.0],[52.1612,4.4846,'Steenstraat',0.8],[52.1648,4.4826,'Stationsweg',0.7],[52.1663,4.4812,'Leiden Centraal',0.55],[52.1572,4.4920,'Nieuwe Rijn',0.45],[52.1603,4.4935,'Haarlemmerstraat',0.5],[52.1555,4.4850,'Rapenburg',0.35],[52.1535,4.4955,'Hooigracht',0.25],[52.1627,4.4900,'Oude Vest',0.3],[52.1578,4.4862,'Bij de club',0.9]];
+let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;const g=()=>{let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);};
+const W=[.28,.21,.07,.12,.10,.14,.08];const cat=()=>{let r=rnd(),a=0;for(let i=0;i<W.length;i++){a+=W[i];if(r<a)return CATS[i][0];}return CATS[6][0];};
+const now=Date.now(),PTS=[];
+HOT.forEach(([la,ln,name,w])=>{const n=Math.round(w*90);for(let i=0;i<n;i++)PTS.push({lat:la+g()*0.0007,lng:ln+g()*0.0011,cat:cat(),t:now-Math.pow(rnd(),1.3)*365*DAY,route:name!=='Bij de club'||rnd()<.3});});
+for(let i=0;i<60;i++)PTS.push({lat:CLUB[0]+g()*0.006,lng:CLUB[1]+g()*0.009,cat:cat(),t:now-rnd()*365*DAY,route:true});
+// echte meldingen uit SAK met een kaartplek
+function live(){const d=window.SAK&&SAK.get();if(!d)return[];const map={Overlast:'Lastiggevallen','Verdachte situatie':'Iets in een drankje',Vechtpartij:'Ruzie of agressie','Onveilige situatie':'Onveilige situatie'};
+  return d.reports.filter(r=>r.geo&&r.src==='publiek').map(r=>({lat:r.geo.lat,lng:r.geo.lng,cat:CATS.some(c=>c[0]===r.sub)?r.sub:(map[r.type]||'Iets anders'),t:r.occurred||r.ts,route:r.place==='onderweg'}));}
+const NAMES=HOT.map(h=>({lat:h[0],lng:h[1],name:h[2]}));
+const nearName=(la,ln)=>{let b=null,bd=1e9;NAMES.forEach(n=>{const dd=(n.lat-la)**2+((n.lng-ln)*.62)**2;if(dd<bd){bd=dd;b=n;}});return bd<0.000004?b.name:'Omgeving '+(la>CLUB[0]?'noord':'zuid')+(ln>CLUB[1]?'oost':'west');};
+const COL=n=>n>=20?'#a63d8f':n>=12?'#6a54aa':n>=7?'#2c5aa0':n>=5?'#3d8fc4':'#7fd3d6';
+
+const st={days:BG?365:90,cats:new Set(CATS.map(c=>c[0]))};
+const map=L.map('map',{scrollWheelZoom:false}).setView(BG?[52.1612,4.4800]:[52.1600,4.4870],BG?16:15);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Kaart © Esri, HERE, Garmin, © OpenStreetMap contributors'}).addTo(map);
+const clubIcon=L.divIcon({className:'',html:'<div style="display:flex;align-items:center;gap:6px;white-space:nowrap"><div style="width:18px;height:18px;background:#1d2b4a;border:3px solid #fff;box-shadow:2px 2px 0 #14161c;transform:rotate(45deg)"></div><span style="font:700 12px Ubuntu,sans-serif;color:#1d2b4a;background:#fff;padding:2px 6px;text-transform:uppercase">Club HiFi</span></div>',iconSize:[110,20],iconAnchor:[9,10]});
+L.marker(CLUB,{icon:clubIcon,interactive:false,zIndexOffset:1000}).addTo(map);
+const layer=L.layerGroup().addTo(map);let cells=[];
+
+function draw(){
+  const all=PTS.concat(live()),from=now-st.days*DAY;
+  const pts=all.filter(p=>p.t>=from&&st.cats.has(p.cat));
+  const by={};pts.forEach(p=>{const i=Math.floor(p.lat/DLAT),j=Math.floor(p.lng/DLNG),k=i+'_'+j;(by[k]=by[k]||{i,j,n:0,route:0,cats:{}});by[k].n++;if(p.route)by[k].route++;by[k].cats[p.cat]=(by[k].cats[p.cat]||0)+1;});
+  cells=Object.values(by).filter(c=>c.n>=MIN).sort((a,b)=>b.n-a.n);
+  layer.clearLayers();
+  cells.forEach(c=>{const b=[[c.i*DLAT,c.j*DLNG],[(c.i+1)*DLAT,(c.j+1)*DLNG]],col=COL(c.n);
+    c.center=[(c.i+.5)*DLAT,(c.j+.5)*DLNG];c.name=nearName(c.center[0],c.center[1]);
+    const top=Object.entries(c.cats).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>k+': '+v).join('<br>');
+    L.rectangle(b,{color:'#fff',weight:1,fillColor:col,fillOpacity:.72}).bindPopup('<div style="font:14px Ubuntu,sans-serif;color:#1d2b4a"><b style="font-size:15px">'+c.name+'</b><br>'+c.n+' meldingen<br><span style="color:#56637d">'+top+'</span></div>').addTo(layer);
+    L.marker(c.center,{icon:L.divIcon({className:'cnt',html:String(c.n),iconSize:[30,16],iconAnchor:[15,8]}),interactive:false}).addTo(layer);});
+  const kept=cells.reduce((a,c)=>a+c.n,0),route=cells.reduce((a,c)=>a+c.route,0);
+  document.getElementById('sTotal').textContent=pts.length;
+  document.getElementById('sTotalL').textContent='meldingen, '+PERIODS.find(p=>p[0]===st.days)[1].toLowerCase();
+  document.getElementById('sRoute').textContent=pts.filter(p=>p.route).length;
+  document.getElementById('sHot').textContent=cells.length;
+  document.getElementById('lgMax').textContent='3 tot '+(cells[0]?cells[0].n:3);
+  const hl=document.getElementById('hotList');hl.innerHTML='';
+  cells.slice(0,6).forEach(c=>{const b=document.createElement('button');b.className='item';const top=Object.entries(c.cats).sort((a,b)=>b[1]-a[1])[0];
+    b.innerHTML='<span class="n">'+c.n+'</span><span class="t"><b>'+c.name+'</b><span>Meest gemeld: '+top[0].toLowerCase()+'</span></span><span class="ms" style="font-size:22px;color:#8b97ab">my_location</span>';
+    b.onclick=()=>{map.setView(c.center,17);window.scrollTo({top:document.getElementById('map').getBoundingClientRect().top+window.scrollY-20,behavior:'smooth'});};hl.appendChild(b);});
+  if(!cells.length)hl.innerHTML='<div style="font-size:14px;color:#56637d;padding:12px 0">Geen blokken met 3 of meer meldingen in deze periode.</div>';
+  const cb=document.getElementById('catBars');cb.innerHTML='';const tot=all.filter(p=>p.t>=from);const max=Math.max(1,...CATS.map(c=>tot.filter(p=>p.cat===c[0]).length));
+  CATS.forEach(([k,l])=>{const n=tot.filter(p=>p.cat===k).length;const r=document.createElement('div');r.className='brow';r.innerHTML='<span>'+l+'</span><b>'+n+'</b><span class="track"><i style="width:'+(n/max*100)+'%"></i></span>';cb.appendChild(r);});
+}
+function chips(){
+  const fp=document.getElementById('fPeriod');fp.innerHTML='';PERIODS.forEach(([d,l])=>{const b=document.createElement('button');b.className='chip';b.textContent=l;b.setAttribute('aria-pressed',st.days===d);b.onclick=()=>{st.days=d;chips();draw();};fp.appendChild(b);});
+  const fc=document.getElementById('fCat');fc.innerHTML='';const allOn=st.cats.size===CATS.length;
+  const a=document.createElement('button');a.className='chip cat';a.textContent='Alles';a.setAttribute('aria-pressed',allOn);a.onclick=()=>{st.cats=new Set(CATS.map(c=>c[0]));chips();draw();};fc.appendChild(a);
+  CATS.forEach(([k,l])=>{const b=document.createElement('button');b.className='chip cat';b.textContent=l;b.setAttribute('aria-pressed',!allOn&&st.cats.has(k));b.onclick=()=>{if(allOn)st.cats=new Set([k]);else{st.cats.has(k)?st.cats.delete(k):st.cats.add(k);if(!st.cats.size)st.cats=new Set(CATS.map(c=>c[0]));}chips();draw();};fc.appendChild(b);});
+}
+chips();draw();
+window.addEventListener('resize',()=>map.invalidateSize());setTimeout(()=>map.invalidateSize(),800);
+if(window.SAK&&SAK.on)SAK.on(()=>draw());else window.addEventListener('sak-ready',()=>{draw();SAK.on&&SAK.on(()=>draw());},{once:true});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "@sak/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { "./phylax.css": "./css/phylax.css", "./sak.css": "./css/sak.css", "./suite.css": "./css/suite.css" }
+}

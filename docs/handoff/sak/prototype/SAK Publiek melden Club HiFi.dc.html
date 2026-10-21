@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<style>
+html,body{margin:0;min-height:100%;background:#fff;color:#1d2b4a;font-family:Ubuntu,system-ui,sans-serif}
+*{box-sizing:border-box}
+a{color:#2c5aa0}a:hover{color:#1d2b4a}
+button,input,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#8b97ab}
+</style>
+<script src="./sak-store.js"></script>
+<script src="./image-slot.js"></script>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#fff">
+
+<div style="position:relative;height:400px;overflow:hidden;background:#3d6fb6;flex:none">
+  <image-slot id="hifi-hero" shape="rect" fit="cover" placeholder="Sfeerfoto van de club" style="position:absolute;inset:0;width:100%;height:100%"></image-slot>
+  <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(160deg,rgba(127,211,214,.72) 0%,rgba(61,111,182,.7) 50%,rgba(106,84,170,.62) 100%)"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;background:rgba(220,228,238,.55);clip-path:polygon(0 72%,22% 92%,48% 74%,86% 52%,100% 64%,100% 100%,0 100%)"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;background:#fff;clip-path:polygon(0 100%,38% 84%,66% 94%,100% 82%,100% 100%)"></div>
+  <div style="position:relative;max-width:480px;margin:0 auto;padding:18px 20px 0;display:flex;flex-direction:column;gap:56px">
+    <img src="assets/logo-hifi.png" alt="Club HiFi" style="width:100px;height:64px;object-fit:contain;flex:none;align-self:flex-start"></img>
+    <div style="display:flex;gap:18px;pointer-events:none">
+      <div style="width:10px;background:#fff;flex:none"></div>
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+        <h1 style="margin:0;font:700 54px/0.95 Ubuntu,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:-.01em;text-shadow:4px 4px 0 #14161c">{{ clubName }}</h1>
+        <div style="font:700 22px/1.12 Ubuntu,sans-serif;color:#fff;text-transform:uppercase;text-wrap:balance;text-shadow:2px 2px 0 rgba(20,22,28,.55)">Voelt iets niet goed? Laat het ons weten.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="width:100%;max-width:480px;margin:0 auto;padding:4px 20px 48px;display:flex;flex-direction:column;gap:30px">
+
+  <div style="font-size:17px;line-height:1.5;color:#3a4866;text-wrap:pretty">In de club, onderweg naar huis of bij jou in de buurt: als iets niet klopt, willen we het weten. Ook als het klein lijkt. De crew van {{ clubName }} leest elke melding.</div>
+
+  <sc-if value="{{ form }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;align-items:stretch;gap:10px"><span style="width:6px;background:#2c5aa0"></span><span style="font:700 20px Ubuntu,sans-serif;text-transform:uppercase">Zo werkt het</span></div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="display:flex;gap:16px;padding:16px;background:#eef3f9">
+          <span style="font:700 34px/1 Ubuntu,sans-serif;color:#2c5aa0;width:24px;flex:none">1</span>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:700">Jij meldt het</span><span style="font-size:14px;line-height:1.45;color:#3a4866">Klopt er iets niet of geeft iets je een vervelend gevoel? Meld het, in de club of onderweg naar huis. Voel je je op dit moment niet veilig? Loop dan naar de beveiliging of de bar.</span></div>
+        </div>
+        <div style="display:flex;gap:16px;padding:16px;background:#eef3f9">
+          <span style="font:700 34px/1 Ubuntu,sans-serif;color:#2c5aa0;width:24px;flex:none">2</span>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:700">Wij kijken wat er nodig is</span><span style="font-size:14px;line-height:1.45;color:#3a4866">We bekijken wat er nodig is om jou te helpen, of om te voorkomen dat het nog eens gebeurt.</span></div>
+        </div>
+        <div style="display:flex;gap:16px;padding:16px;background:#eef3f9">
+          <span style="font:700 34px/1 Ubuntu,sans-serif;color:#2c5aa0;width:24px;flex:none">3</span>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:700">Er komt actie</span><span style="font-size:14px;line-height:1.45;color:#3a4866">De beveiliging grijpt in, we houden een plek of persoon extra in de gaten, of we zorgen ervoor dat het de volgende keer niet meer gebeurt.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:28px">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:stretch;gap:10px"><span style="width:6px;background:#2c5aa0"></span><span style="font:700 20px Ubuntu,sans-serif;text-transform:uppercase">Wat is er gebeurd?</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><sc-for list="{{ types }}" as="t" hint-placeholder-count="8"><button onClick="{{ t.onClick }}" style="min-height:64px;display:flex;align-items:center;gap:14px;border:2px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};padding:10px 14px;cursor:pointer;text-align:left"><span style="font-family:'Material Symbols Sharp';font-size:28px;line-height:1;font-feature-settings:'liga';flex:none">{{ t.icon }}</span><span style="display:flex;flex-direction:column;gap:3px;min-width:0"><span style="font-size:16px;font-weight:700">{{ t.label }}</span><span style="font-size:13px;line-height:1.35;color:{{ t.sub }}">{{ t.example }}</span></span></button></sc-for></div>
+        <div style="font-size:13px;line-height:1.45;color:#56637d">Jas kwijt of een vraag over de muziek? Daarvoor kun je terecht bij de garderobe of de bar.</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:stretch;gap:10px"><span style="width:6px;background:#2c5aa0"></span><span style="font:700 20px Ubuntu,sans-serif;text-transform:uppercase">Waar was het?</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><sc-for list="{{ placeBtns }}" as="b" hint-placeholder-count="2"><button onClick="{{ b.onClick }}" style="min-height:56px;display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:15px;font-weight:700"><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga'">{{ b.icon }}</span>{{ b.label }}</button></sc-for></div>
+        <sc-if value="{{ inClub }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ spots }}" as="c" hint-placeholder-count="6"><button onClick="{{ c.onClick }}" style="min-height:44px;padding:0 14px;border:2px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};cursor:pointer;font-size:14px;font-weight:500">{{ c.label }}</button></sc-for></div>
+          <input value="{{ loc }}" onChange="{{ onLoc }}" placeholder="Of beschrijf de plek" style="min-height:52px;border:2px solid #d5deea;background:#fff;color:#1d2b4a;padding:10px 12px;font-size:16px"></input>
+        </sc-if>
+        <sc-if value="{{ onRoute }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="font-size:14px;line-height:1.45;color:#3a4866">Tik op de kaart waar het gebeurde. Ongeveer is goed genoeg.</div>
+            <x-import component-from-global-scope="sak-pin-picker" from="./sak-pin-picker.js" lat="52.1578" lng="4.4862" style="width:100%;height:280px;border:2px solid #d5deea" hint-size="100%,280px"></x-import>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+              <button onClick="{{ useGps }}" style="min-height:44px;display:flex;align-items:center;gap:6px;padding:0 14px;border:2px solid #1d2b4a;background:#fff;color:#1d2b4a;cursor:pointer;font-size:14px;font-weight:700"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga'">my_location</span>Ik ben er nu</button>
+              <span style="font-size:13px;color:{{ pinCol }}">{{ pinText }}</span>
+            </div>
+            <input value="{{ loc }}" onChange="{{ onLoc }}" placeholder="Straat of herkenningspunt (mag)" style="min-height:52px;border:2px solid #d5deea;background:#fff;color:#1d2b4a;padding:10px 12px;font-size:16px"></input>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">
+            <span style="font-size:15px;font-weight:700">Wanneer?</span>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px"><sc-for list="{{ whenBtns }}" as="w" hint-placeholder-count="3"><button onClick="{{ w.onClick }}" style="min-height:48px;border:2px solid {{ w.bd }};background:{{ w.bg }};color:{{ w.fg }};cursor:pointer;font-size:14px;font-weight:500">{{ w.label }}</button></sc-for></div>
+            <sc-if value="{{ otherDay }}" hint-placeholder-val="{{ false }}"><input type="date" value="{{ date }}" onChange="{{ onDate }}" style="min-height:52px;border:2px solid #d5deea;background:#fff;color:#1d2b4a;padding:10px 12px;font-size:16px"></input></sc-if>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:stretch;gap:10px"><span style="width:6px;background:#2c5aa0"></span><span style="font:700 20px Ubuntu,sans-serif;text-transform:uppercase">Vertel wat je zag</span></div>
+        <textarea value="{{ text }}" onChange="{{ onText }}" rows="4" placeholder="Wat gebeurde er? Hoe zag de persoon eruit, en welke kant ging hij of zij op?" style="border:2px solid #d5deea;background:#fff;color:#1d2b4a;padding:10px 12px;font-size:16px;line-height:1.4;resize:vertical"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">{{ thumbs }}<label style="min-height:48px;display:flex;align-items:center;gap:8px;border:2px solid #d5deea;background:#fff;padding:0 16px;cursor:pointer;font-size:14px;font-weight:500"><input type="file" accept="image/*" capture="environment" multiple onChange="{{ onPhoto }}" style="display:none"></input><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga'">photo_camera</span>Foto toevoegen (mag)</label></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:stretch;gap:10px"><span style="width:6px;background:#2c5aa0"></span><span style="font:700 20px Ubuntu,sans-serif;text-transform:uppercase">Mogen we je nog iets vragen?</span></div>
+        <div style="font-size:14px;line-height:1.5;color:#3a4866">Soms hebben we nog vragen over een melding. Met je gegevens kunnen we contact met je opnemen. Zonder gegevens kan dat niet, maar je melding telt natuurlijk wel mee.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><sc-for list="{{ contactBtns }}" as="b" hint-placeholder-count="2"><button onClick="{{ b.onClick }}" style="min-height:52px;border:2px solid {{ b.bd }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer;font-size:15px;font-weight:700">{{ b.label }}</button></sc-for></div>
+        <sc-if value="{{ withContact }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:8px"><input value="{{ name }}" onChange="{{ onName }}" placeholder="Voornaam" style="min-height:52px;border:2px solid #d5deea;background:#fff;color:#1d2b4a;padding:10px 12px;font-size:16px"></input><input value="{{ phone }}" onChange="{{ onPhone }}" type="tel" placeholder="06-nummer" style="min-height:52px;border:2px solid #d5deea;background:#fff;color:#1d2b4a;padding:10px 12px;font-size:16px"></input></div>
+          <div style="font-size:13px;color:#56637d">Alleen de beveiliging ziet je gegevens. We gebruiken ze alleen voor deze melding.</div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button onClick="{{ send }}" style="min-height:62px;border:0;background:{{ sendBg }};color:#fff;cursor:pointer;font:700 20px Ubuntu,sans-serif;text-transform:uppercase;box-shadow:4px 4px 0 #14161c">Melding versturen</button>
+        <sc-if value="{{ showMissing }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#56637d;text-align:center;padding-top:6px">{{ missing }}</div></sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;gap:16px;padding-top:6px"><div style="width:10px;background:#2c5aa0;flex:none"></div><div style="display:flex;flex-direction:column;gap:6px"><div style="font:700 32px/1 Ubuntu,sans-serif;text-transform:uppercase;text-wrap:balance">Dankjewel voor je melding</div><div style="font:500 14px Ubuntu,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#56637d">Meldnummer {{ doneNo }}</div></div></div>
+      <div style="display:flex;flex-direction:column;background:#eef3f9">
+        <sc-for list="{{ after }}" as="a" hint-placeholder-count="3">
+          <div style="display:flex;gap:12px;padding:14px;border-bottom:2px solid #fff"><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga';color:#2c5aa0;flex:none">{{ a.icon }}</span><span style="font-size:15px;line-height:1.45">{{ a.text }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button onClick="{{ again }}" style="min-height:52px;padding:0 12px;border:2px solid #1d2b4a;background:transparent;color:#1d2b4a;cursor:pointer;font-size:14px;font-weight:700;text-transform:uppercase">Nog iets melden</button>
+        <a href="SAK Meldkaart Club HiFi.html" style="min-height:52px;display:flex;align-items:center;justify-content:center;gap:6px;background:#1d2b4a;color:#fff;text-decoration:none;font-size:14px;font-weight:700;text-transform:uppercase"><span style="font-family:'Material Symbols Sharp';font-size:20px;line-height:1;font-feature-settings:'liga'">map</span>Bekijk de meldkaart</a>
+      </div>
+    </div>
+  </sc-if>
+
+  <a href="SAK Meldkaart Club HiFi.html" style="display:flex;align-items:center;gap:14px;padding:16px;border:2px solid #d5deea;color:#1d2b4a;text-decoration:none"><span style="font-family:'Material Symbols Sharp';font-size:30px;line-height:1;font-feature-settings:'liga';color:#6a54aa;flex:none">map</span><span style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:16px;font-weight:700">Meldkaart</span><span style="font-size:13px;line-height:1.4;color:#56637d">Zie waar rond {{ clubName }} de meeste overlast wordt gemeld. Anoniem en per blok.</span></span><span style="font-family:'Material Symbols Sharp';font-size:22px;line-height:1;font-feature-settings:'liga';color:#8b97ab">chevron_right</span></a>
+</div>
+
+<div style="margin-top:auto;position:relative;background:#1d2b4a;color:#fff;padding:60px 0 36px;clip-path:polygon(0 22px,34% 0,72% 30px,100% 8px,100% 100%,0 100%)">
+  <div style="max-width:480px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:12px">
+    <div style="font:700 18px Ubuntu,sans-serif;text-transform:uppercase">Wat we met je melding doen</div>
+    <sc-for list="{{ privacy }}" as="p" hint-placeholder-count="4">
+      <div style="display:flex;gap:10px;font-size:14px;line-height:1.5;color:#d3dae6"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1.3;font-feature-settings:'liga';color:#7fd3d6;flex:none">{{ p.icon }}</span><span>{{ p.text }}</span></div>
+    </sc-for>
+    <div style="font-size:12px;color:#8b97ab;line-height:1.5;padding-top:12px">Beveiliging van {{ clubName }}. Meldingen worden verwerkt met SAK.</div>
+  </div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;clubName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Club HiFi&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;retention&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;3 maanden&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+const TYPES=[
+  ['Lastiggevallen','front_hand','Lastiggevallen of ongewenst aangeraakt','Iemand blijft aandringen, komt te dichtbij of raakt je aan zonder dat je dat wilt','Overlast','P1'],
+  ['Nageroepen of gevolgd','directions_walk','Nageroepen of gevolgd','Iemand roept of fluit je na, of loopt je achterna','Overlast','P2'],
+  ['Iets in een drankje','local_bar','Iets in een drankje','Je denkt dat er iets in jouw drankje of dat van een ander is gedaan','Verdachte situatie','P1'],
+  ['Ruzie of agressie','sports_mma','Ruzie of agressie','Een ruzie die uit de hand loopt, iemand die dreigt of duwt','Vechtpartij','P1'],
+  ['Onwel','medical_services','Iemand is onwel','Flauwgevallen, te veel gedronken of gewond','Onwel','P1'],
+  ['Onveilige situatie','warning','Onveilige situatie','Glas op de vloer, een geblokkeerde uitgang, het wordt te druk','Onveilige situatie','P2'],
+  ['Overlast in de buurt','home','Overlast in de buurt','Kots, glas of lawaai op straat, bijvoorbeeld na een feest','Overlast','P3'],
+  ['Iets anders','flag','Iets anders','Je weet niet goed wat het is, maar het voelt niet goed','Overig','P3']];
+const SPOTS=['Dansvloer','Bar voor','Bar achter','Toiletten','Garderobe','Rij buiten'];
+const NAVY='#1d2b4a',BLUE='#2c5aa0',LINE='#d5deea';
+const pick=(on,a)=>({bg:on?a||NAVY:'#fff',fg:on?'#fff':NAVY,bd:on?a||NAVY:LINE});
+class Component extends DCLogic {
+  state={d:window.SAK?window.SAK.get():null,type:'',place:'club',loc:'',geo:null,gpsErr:'',when:'nu',date:'',text:'',photos:[],contact:true,name:'',phone:'',done:null,doneRoute:false,tried:false};
+  componentDidMount(){
+    const hook=()=>this.setState({d:SAK.get()});if(window.SAK)hook();else window.addEventListener('sak-ready',hook,{once:true});
+    this.onPin=e=>this.setState({geo:e.detail,gpsErr:''});window.addEventListener('sak-pin',this.onPin);
+  }
+  componentWillUnmount(){window.removeEventListener('sak-pin',this.onPin);}
+  renderVals(){
+    const s=this.state,d=s.d,ss=p=>this.setState(p),clubName=this.props.clubName||'Club HiFi',keep=this.props.retention||'3 maanden';
+    const pid=(location.search.match(/[?&]p=([^&]+)/)||[])[1]||'PJ-SOOS';
+    const pj=d?(d.projects.find(p=>p.id===pid)||d.projects[0]):null;
+    const o={clubName,form:!s.done,done:!!s.done,doneNo:s.done||''};
+    o.types=TYPES.map(([v,icon,label,example])=>{const on=s.type===v;return {icon,label,example,...pick(on,BLUE),sub:on?'#dbe6f5':'#56637d',onClick:()=>ss({type:v})};});
+    o.placeBtns=[['club','nightlife','In de club'],['onderweg','directions_walk','Op straat']].map(([v,icon,label])=>({icon,label,...pick(s.place===v),onClick:()=>ss({place:v,loc:''})}));
+    o.inClub=s.place==='club';o.onRoute=s.place==='onderweg';
+    o.spots=SPOTS.map(l=>({label:l,...pick(s.loc===l,BLUE),onClick:()=>ss({loc:s.loc===l?'':l})}));
+    o.loc=s.loc;o.text=s.text;o.name=s.name;o.phone=s.phone;o.date=s.date;
+    o.onLoc=e=>ss({loc:e.target.value});o.onText=e=>ss({text:e.target.value});o.onName=e=>ss({name:e.target.value});o.onPhone=e=>ss({phone:e.target.value});o.onDate=e=>ss({date:e.target.value});
+    o.pinText=s.gpsErr||(s.geo?'Plek gekozen':'Nog geen plek gekozen');o.pinCol=s.gpsErr?'#b23a3a':s.geo?'#2c7a4b':'#56637d';
+    o.useGps=()=>{if(!navigator.geolocation){ss({gpsErr:'Locatie is niet beschikbaar. Tik op de kaart.'});return;}navigator.geolocation.getCurrentPosition(p=>{const g={lat:p.coords.latitude,lng:p.coords.longitude};ss({geo:g,gpsErr:''});window.dispatchEvent(new CustomEvent('sak-pin-set',{detail:g}));},()=>ss({gpsErr:'Geen toegang tot je locatie. Tik op de kaart.'}),{enableHighAccuracy:true,timeout:8000});};
+    o.whenBtns=[['nu','Net'],['vannacht','Eerder vannacht'],['anders','Andere dag']].map(([v,label])=>({label,...pick(s.when===v,BLUE),onClick:()=>ss({when:v})}));
+    o.otherDay=s.when==='anders';
+    o.onPhoto=e=>{const fs=[...(e.target.files||[])];e.target.value='';Promise.all(fs.map(f=>SAK.downscale(f,1100))).then(src=>this.setState(st=>({photos:[...st.photos,...src]})));};
+    o.thumbs=s.photos.map((src,k)=>React.createElement('img',{key:k,src,style:{width:48,height:48,objectFit:'cover',border:'2px solid '+LINE}}));
+    o.contactBtns=[[true,'Ja, neem contact op'],[false,'Liever anoniem']].map(([v,label])=>({label,...pick(s.contact===v),onClick:()=>ss({contact:v})}));
+    o.withContact=s.contact;
+    const miss=[!s.type&&'wat er is gebeurd',s.place==='onderweg'&&!s.geo&&!s.loc.trim()&&'waar het was',s.place==='onderweg'&&s.when==='anders'&&!s.date&&'de datum',!(s.text.trim()||s.photos.length)&&'wat je zag (of een foto)',s.contact&&!s.phone.trim()&&'je 06-nummer'].filter(Boolean);
+    const ok=!miss.length;o.sendBg=ok?BLUE:'#a3aec0';o.showMissing=!ok&&s.tried;o.missing='Vul nog in: '+miss.join(', ')+'.';
+    o.send=()=>{if(!ok||!pj){ss({tried:true});return;}const T=TYPES.find(t=>t[0]===s.type);let no='';
+      const at=s.when==='anders'&&s.date?new Date(s.date+'T23:30').getTime():Date.now()-(s.when==='vannacht'?90*60000:0);
+      SAK.set(x=>{const n=SAK.h.next(x,'M');no='M-'+n;x.reports.push({id:'M'+n,no,ts:Date.now(),occurred:at,src:'publiek',by:null,contact:s.contact?{anon:false,name:s.name.trim(),phone:s.phone.trim()}:{anon:true},type:T[4],sub:T[0],prio:T[5],project:pj.id,pos:null,place:s.place,geo:s.place==='onderweg'?s.geo:null,loc:(s.place==='onderweg'?'Onderweg: ':'')+(s.loc.trim()||(s.geo?'zie kaart':'')),text:'['+T[2]+'] '+(s.text.trim()||'(alleen foto)'),photos:s.photos,medical:null,status:'Nieuw',tasks:[],persons:[],log:[]});});
+      ss({done:no,doneRoute:s.place==='onderweg',tried:false});};
+    o.after=[{icon:'visibility',text:'De beveiliging heeft je melding binnen en kijkt wat er nodig is.'},
+      {icon:s.contact?'call':'visibility_off',text:s.contact?'Hebben we nog vragen? Dan nemen we contact met je op via het nummer dat je gaf.':'Je hebt anoniem gemeld. We kunnen je daarom niet terugbellen.'},
+      s.doneRoute?{icon:'map',text:'Je melding telt anoniem mee op de meldkaart. Zo ziet iedereen welke plekken je beter kunt mijden.'}:{icon:'shield',text:'Ben je nog in de club en voel je je niet veilig? Loop naar de beveiliging of de bar.'}];
+    o.privacy=[{icon:'lock',text:'Alleen de beveiliging van '+clubName+' ziet je melding en je gegevens.'},{icon:'visibility_off',text:'Anoniem melden? Dan slaan we geen naam, nummer of locatie van je telefoon op.'},
+      {icon:'map',text:'Op de openbare meldkaart staat nooit je precieze plek. Meldingen worden samengevoegd per blok van ongeveer 150 meter en pas getoond vanaf 3 meldingen.'},{icon:'schedule',text:'Na '+keep+' halen we je naam en nummer van de melding af. De melding zelf bewaren we, voor statistiek en om van te leren.'}];
+    o.again=()=>ss({type:'',loc:'',geo:null,when:'nu',date:'',text:'',photos:[],done:null,tried:false});
+    return o;
+  }
+}
+</script>
+</body>
+</html>

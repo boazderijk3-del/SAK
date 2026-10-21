@@ -1,0 +1,32 @@
+{
+  "font": {
+    "sans": "Barlow, system-ui, sans-serif",
+    "condensed": "'Barlow Condensed', sans-serif",
+    "mono": "'JetBrains Mono', monospace",
+    "icons": "'Material Symbols Sharp'",
+    "googleFonts": [
+      "https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap",
+      "https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0"
+    ]
+  },
+  "color": {
+    "bg": { "void": "#050607", "app": "#0a0c0e", "bar": "#0d1013", "panel": "rgba(13,16,19,.96)", "raised": "#12161a", "raised2": "#151a1f", "hover": "#1a1f24", "hover2": "#1b2127", "activeNav": "rgba(242,179,61,.08)", "activeTool": "rgba(242,179,61,.16)" },
+    "line": { "divider": "#232a31", "control": "#2c343c", "strong": "#3a434c" },
+    "text": { "primary": "#e6e9ec", "secondary": "#c3cad1", "tertiary": "#9aa4ad", "muted": "#8a949e", "placeholder": "#6b757f", "faint": "#5b646d", "onAmber": "#0a0c0e" },
+    "accent": { "amber": "#f2b33d", "amberHover": "#ffd27a" },
+    "meaning": { "friendly": "#5cc8ff", "hostile": "#ff5f57", "neutral": "#4fd18b", "unknown": "#f2d64b", "purple": "#c792ea", "orange": "#ff9f43" },
+    "priority": { "P1": "#ff5f57", "P2": "#f2b33d", "P3": "#8a949e" },
+    "role": { "TL": "#f2b33d", "BEV": "#5cc8ff", "POR": "#9aa4ad", "INT": "#ff5f57", "EHBO": "#4fd18b", "MK": "#c792ea", "COO": "#f2d64b" },
+    "nav": { "meldingen": "#f2d64b", "incidenten": "#5cc8ff", "bolo": "#ff5f57", "sancties": "#9aa4ad" },
+    "public": { "bg": "#f3f1ec", "card": "#ffffff", "text": "#16191c", "text2": "#4a4f54", "muted": "#6a6f74", "line": "#d6d2ca", "placeholder": "#8a8f94", "accent": "#b5651d", "emergency": "#b5361d", "success": "#2f9e5f" }
+  },
+  "radius": { "default": 0, "dot": "50%", "mapSmall": 6, "mapCard": 8 },
+  "shadow": { "floating": "0 16px 40px rgba(0,0,0,.5)" },
+  "letterSpacing": { "wordmark": ".06em", "condensed": ".16em", "condensedTight": ".12em" },
+  "layout": {
+    "headerMinHeight": 52, "beheerSidebar": 230, "mobileMaxWidth": 440,
+    "device": { "tablet": [1194, 834], "phone": [402, 874] },
+    "toolButton": { "default": 60, "compact": 46 },
+    "minHitTarget": 44
+  }
+}

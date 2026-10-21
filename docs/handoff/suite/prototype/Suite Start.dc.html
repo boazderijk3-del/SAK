@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Barlow:wght@600&family=Barlow+Condensed:wght@600&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#08090b;color:#e8eaf0;font-family:'Space Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#e8eaf0}
+a:hover{color:#ffffff}
+input::placeholder{color:#5c616b}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#08090b">
+<header style="height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 28px;border-bottom:1px solid rgba(255,255,255,.06)">
+<div style="display:flex;align-items:center;gap:14px">
+<div style="display:flex;align-items:center;gap:6px">
+<span style="width:14px;height:14px;border-radius:4px;border:2px solid #35d0c4"></span>
+<span style="width:14px;height:14px;border-radius:2px;background:#f2b33d"></span>
+<span style="width:14px;height:14px;border-radius:50%;border:2px solid #8a949e"></span>
+</div>
+<div style="font-size:14px;font-weight:600;letter-spacing:.01em">Phylax · SAK · Ophanim</div>
+</div>
+<sc-if value="{{ loggedIn }}" hint-placeholder-val="{{ false }}">
+<div style="position:relative">
+<button onClick="{{ toggleUser }}" style="display:flex;align-items:center;gap:10px;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:5px 10px 5px 5px;color:#e8eaf0;cursor:pointer;font:inherit" style-hover="background:#12151c">
+<span style="width:26px;height:26px;border-radius:6px;background:#1f2430;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:#b6bcc6">MV</span>
+<span style="font-size:13px">M. de Vries</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b">▾</span>
+</button>
+<sc-if value="{{ userOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;right:0;top:calc(100% + 8px);width:260px;z-index:20;background:#151922;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:6px;box-shadow:0 16px 40px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:2px">
+<div style="padding:8px 10px 10px;border-bottom:1px solid rgba(255,255,255,.06);margin-bottom:4px;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:13px;font-weight:600">M. de Vries</span>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b">m.devries@voorbeeld.nl</span>
+</div>
+<button onClick="{{ openAccount }}" style="text-align:left;background:transparent;border:0;border-radius:6px;padding:8px 10px;color:#e8eaf0;font:inherit;font-size:13px;cursor:pointer" style-hover="background:#1f2531">Account en beveiliging</button>
+<button onClick="{{ logout }}" style="text-align:left;background:transparent;border:0;border-radius:6px;padding:8px 10px;color:#e8eaf0;font:inherit;font-size:13px;cursor:pointer" style-hover="background:#1f2531">Uitloggen</button>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</header>
+
+<sc-if value="{{ isAuth }}" hint-placeholder-val="{{ true }}">
+<main style="flex:1;display:flex;align-items:center;justify-content:center;padding:48px 20px">
+<div style="width:100%;max-width:380px;display:flex;flex-direction:column;gap:24px">
+
+<sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h1 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em">Inloggen</h1>
+<p style="margin:0;font-size:13px;color:#8b909b;line-height:1.5">Eén account voor Phylax, SAK en Ophanim.</p>
+</div>
+<sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:13px;color:#f0706a;border:1px solid rgba(240,112,106,.4);border-radius:8px;padding:10px 12px;line-height:1.45">{{ error }}</div>
+</sc-if>
+<div style="display:flex;flex-direction:column;gap:14px">
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;color:#b6bcc6">E-mailadres</span><input value="{{ email }}" onChange="{{ onEmail }}" placeholder="naam@organisatie.nl" style="height:40px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:#0b0d12;color:#e8eaf0;padding:0 12px;font:inherit;font-size:14px;outline:none"></input></label>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="display:flex;justify-content:space-between;font-size:12px;color:#b6bcc6"><span>Wachtwoord</span><span onClick="{{ goForgot }}" style="color:#8b909b;cursor:pointer" style-hover="color:#e8eaf0">Wachtwoord vergeten?</span></span><input type="password" value="{{ pw }}" onChange="{{ onPw }}" onKeyDown="{{ onPwKey }}" style="height:40px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:#0b0d12;color:#e8eaf0;padding:0 12px;font:inherit;font-size:14px;outline:none"></input></label>
+<button onClick="{{ submitLogin }}" style="height:40px;border-radius:8px;border:0;background:#e8eaf0;color:#08090b;font:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#ffffff">Inloggen</button>
+</div>
+<sc-if value="{{ showSso }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#5c616b"><span style="flex:1;height:1px;background:rgba(255,255,255,.08)"></span>OF<span style="flex:1;height:1px;background:rgba(255,255,255,.08)"></span></div>
+<button onClick="{{ ssoLogin }}" style="height:40px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:transparent;color:#e8eaf0;font:inherit;font-size:14px;cursor:pointer" style-hover="background:#12151c">Inloggen met organisatieaccount</button>
+</sc-if>
+<p style="margin:0;font-size:12px;color:#5c616b;line-height:1.5">Geen account? Je beheerder maakt er een voor je aan.</p>
+</sc-if>
+
+<sc-if value="{{ isTwofa }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h1 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em">Bevestig dat jij het bent</h1>
+<p style="margin:0;font-size:13px;color:#8b909b;line-height:1.5">Vul de 6-cijferige code uit je authenticator-app in.</p>
+</div>
+<sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:13px;color:#f0706a;border:1px solid rgba(240,112,106,.4);border-radius:8px;padding:10px 12px;line-height:1.45">{{ error }}</div>
+</sc-if>
+<input value="{{ code }}" onChange="{{ onCode }}" onKeyDown="{{ onCodeKey }}" placeholder="000000" maxLength="6" inputMode="numeric" style="height:56px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:#0b0d12;color:#e8eaf0;padding:0 16px;font-family:'JetBrains Mono',monospace;font-size:26px;letter-spacing:.4em;text-align:center;outline:none"></input>
+<button onClick="{{ submitCode }}" style="height:40px;border-radius:8px;border:0;background:#e8eaf0;color:#08090b;font:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#ffffff">Bevestigen</button>
+<div style="display:flex;justify-content:space-between;font-size:12px;color:#8b909b">
+<span onClick="{{ backToLogin }}" style="cursor:pointer" style-hover="color:#e8eaf0">← Ander account</span>
+<span style="font-family:'JetBrains Mono',monospace">{{ email }}</span>
+</div>
+</sc-if>
+
+<sc-if value="{{ isForgot }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:6px">
+<h1 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em">Wachtwoord herstellen</h1>
+<p style="margin:0;font-size:13px;color:#8b909b;line-height:1.5">We sturen een link naar je e-mailadres. De link is 30 minuten geldig.</p>
+</div>
+<sc-if value="{{ forgotSent }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:13px;color:#56d38a;border:1px solid rgba(86,211,138,.35);border-radius:8px;padding:10px 12px;line-height:1.45">Als dit adres bij ons bekend is, staat de link nu in je inbox.</div>
+</sc-if>
+<label style="display:flex;flex-direction:column;gap:6px"><span style="font-size:12px;color:#b6bcc6">E-mailadres</span><input value="{{ email }}" onChange="{{ onEmail }}" placeholder="naam@organisatie.nl" style="height:40px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:#0b0d12;color:#e8eaf0;padding:0 12px;font:inherit;font-size:14px;outline:none"></input></label>
+<button onClick="{{ sendReset }}" style="height:40px;border-radius:8px;border:0;background:#e8eaf0;color:#08090b;font:inherit;font-size:14px;font-weight:600;cursor:pointer" style-hover="background:#ffffff">Stuur herstellink</button>
+<span onClick="{{ backToLogin }}" style="font-size:12px;color:#8b909b;cursor:pointer" style-hover="color:#e8eaf0">← Terug naar inloggen</span>
+</sc-if>
+
+</div>
+</main>
+</sc-if>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;width:100%;max-width:1120px;margin:0 auto;padding:56px 28px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+<div style="display:flex;flex-direction:column;gap:6px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b;letter-spacing:.06em">KIES EEN PROGRAMMA</div>
+<h1 style="margin:0;font-size:28px;font-weight:600;letter-spacing:-.01em">Waar ga je aan werken?</h1>
+</div>
+<label style="display:flex;flex-direction:column;gap:6px;min-width:260px"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#8b909b;letter-spacing:.06em">OPDRACHTGEVER</span>
+<select value="{{ client }}" onChange="{{ onClient }}" style="height:38px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:#0b0d12;color:#e8eaf0;padding:0 10px;font:inherit;font-size:13px;outline:none"><sc-for list="{{ clients }}" as="c" hint-placeholder-count="3"><option value="{{ c.id }}">{{ c.name }}</option></sc-for></select>
+</label>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
+
+<a href="{{ phylaxHref }}" style="display:flex;flex-direction:column;gap:22px;padding:24px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#0e1117;color:#e8eaf0;text-decoration:none;min-height:300px" style-hover="border-color:#35d0c4">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:6px;border:2px solid #35d0c4"></span><span style="font-size:20px;font-weight:600;letter-spacing:.02em">Phylax</span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b">onderzoeker</span>
+</div>
+<p style="margin:0;font-size:14px;color:#b6bcc6;line-height:1.5">Onderzoek, casussen en rapportage. Materiaal analyseren, gegevens bevestigen, rapporten vaststellen.</p>
+<div style="margin-top:auto;display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,.06)">
+<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px"><span style="color:#b6bcc6">Werkbak</span><span style="font-family:'JetBrains Mono',monospace;color:#e2ab44">12 open</span></div>
+<div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13px"><span style="color:#b6bcc6">Lopende onderzoeken</span><span style="font-family:'JetBrains Mono',monospace;color:#8b909b">3</span></div>
+</div>
+<span style="font-size:13px;font-weight:600;color:#35d0c4">Open Phylax →</span>
+</a>
+
+<div style="display:flex;flex-direction:column;gap:22px;padding:24px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:#0d1013;min-height:300px">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:baseline;gap:8px"><span style="font:700 20px 'JetBrains Mono',monospace;color:#f2b33d;letter-spacing:.06em">SAK</span><span style="font:600 12px 'Barlow Condensed',sans-serif;letter-spacing:.16em;color:#8a949e">SECURITY AWARENESS KIT</span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b">meldkamer</span>
+</div>
+<p style="margin:0;font-size:14px;color:#b6bcc6;line-height:1.5">Beveiliging op locatie. Meldingen en incidenten, teams op de kaart, personeel en materiaal.</p>
+<div style="margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<sc-for list="{{ sakLinks }}" as="l" hint-placeholder-count="4">
+<a href="{{ l.href }}" style="display:flex;flex-direction:column;gap:3px;padding:10px 12px;border:1px solid #2c343c;color:#e6e9ec;text-decoration:none" style-hover="border-color:#f2b33d">
+<span style="font:600 14px Barlow,sans-serif">{{ l.name }}</span>
+<span style="font-size:11px;color:#8a949e">{{ l.sub }}</span>
+</a>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:22px;padding:24px;border-radius:12px;border:1px dashed rgba(255,255,255,.12);min-height:300px;opacity:.6">
+<div style="display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:10px"><span style="width:22px;height:22px;border-radius:50%;border:2px solid #8a949e"></span><span style="font-size:20px;font-weight:600">Ophanim</span></div>
+<span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b">later</span>
+</div>
+<p style="margin:0;font-size:14px;color:#8b909b;line-height:1.5">Nog niet beschikbaar.</p>
+</div>
+
+</div>
+
+<p style="margin:0;font-size:12px;color:#5c616b;line-height:1.5">Je ziet alleen de programma's waar je toegang toe hebt. De gekozen opdrachtgever gaat mee naar het programma dat je opent.</p>
+</main>
+</sc-if>
+
+<sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
+<main style="flex:1;width:100%;max-width:720px;margin:0 auto;padding:56px 28px;display:flex;flex-direction:column;gap:28px">
+<span onClick="{{ goHome }}" style="font-size:12px;color:#8b909b;cursor:pointer" style-hover="color:#e8eaf0">← Programma's</span>
+<h1 style="margin:0;font-size:22px;font-weight:600;letter-spacing:-.01em">Account en beveiliging</h1>
+<div style="display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,.06)">
+<sc-for list="{{ accountRows }}" as="r" hint-placeholder-count="5">
+<div style="display:grid;grid-template-columns:180px minmax(0,1fr) auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+<span style="font-size:12px;color:#8b909b">{{ r.k }}</span>
+<span style="font-size:13px;color:#e8eaf0">{{ r.v }}</span>
+<span style="font-size:12px;color:#8b909b">{{ r.a }}</span>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b;letter-spacing:.06em">ACTIEVE SESSIES</div>
+<sc-for list="{{ sessions }}" as="s" hint-placeholder-count="2">
+<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding:12px 14px;border:1px solid rgba(255,255,255,.08);border-radius:8px">
+<div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:13px">{{ s.device }}</span><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#8b909b">{{ s.meta }}</span></div>
+<span style="font-size:12px;color:{{ s.col }}">{{ s.action }}</span>
+</div>
+</sc-for>
+</div>
+</main>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;home&quot;],&quot;default&quot;:&quot;login&quot;,&quot;tsType&quot;:&quot;'login'|'home'&quot;},&quot;twofa&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;sso&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = { view: this.props.start === 'home' ? 'home' : 'login', email: 'm.devries@voorbeeld.nl', pw: '', code: '', error: '', userOpen: false, forgotSent: false, client: 'all' };
+  login() {
+    const s = this.state;
+    if (!/^\S+@\S+\.\S+$/.test(s.email) || !s.pw) return this.setState({ error: 'Vul je e-mailadres en wachtwoord in.' });
+    this.setState({ error: '', view: (this.props.twofa ?? true) ? 'twofa' : 'home', code: '' });
+  }
+  code() {
+    if (!/^\d{6}$/.test(this.state.code)) return this.setState({ error: 'De code bestaat uit 6 cijfers.' });
+    this.setState({ error: '', view: 'home' });
+  }
+  renderVals() {
+    const s = this.state, v = s.view, q = s.client === 'all' ? '' : '?opdrachtgever=' + s.client;
+    return {
+      isAuth: ['login', 'twofa', 'forgot'].includes(v), isLogin: v === 'login', isTwofa: v === 'twofa', isForgot: v === 'forgot',
+      isHome: v === 'home', isAccount: v === 'account', loggedIn: v === 'home' || v === 'account',
+      showSso: this.props.sso ?? true,
+      email: s.email, pw: s.pw, code: s.code, error: s.error, hasError: !!s.error, forgotSent: s.forgotSent,
+      onEmail: e => this.setState({ email: e.target.value }), onPw: e => this.setState({ pw: e.target.value }),
+      onPwKey: e => { if (e.key === 'Enter') this.login(); },
+      onCode: e => this.setState({ code: e.target.value.replace(/\D/g, '').slice(0, 6) }),
+      onCodeKey: e => { if (e.key === 'Enter') this.code(); },
+      submitLogin: () => this.login(), submitCode: () => this.code(),
+      ssoLogin: () => this.setState({ error: '', view: 'home' }),
+      goForgot: () => this.setState({ view: 'forgot', error: '', forgotSent: false }),
+      sendReset: () => this.setState({ forgotSent: true }),
+      backToLogin: () => this.setState({ view: 'login', error: '', pw: '' }),
+      userOpen: s.userOpen, toggleUser: () => this.setState({ userOpen: !s.userOpen }),
+      logout: () => this.setState({ view: 'login', userOpen: false, pw: '', code: '' }),
+      openAccount: () => this.setState({ view: 'account', userOpen: false }), goHome: () => this.setState({ view: 'home' }),
+      client: s.client, onClient: e => this.setState({ client: e.target.value }),
+      clients: [{ id: 'all', name: 'Alle opdrachtgevers' }, { id: 'K-ODY', name: 'S.V. Odysseus' }, { id: 'K-MOJO', name: 'Mojo Concerts' }],
+      phylaxHref: 'Phylax v3.dc.html' + q,
+      sakLinks: [
+        { name: 'Meldkamer', sub: 'Meldingen, incidenten, register', href: 'SAK Meldkamer.dc.html' + q },
+        { name: 'Kaart', sub: 'Teams, taken, dispatch', href: 'SAK Kaart.dc.html' + q },
+        { name: 'Beheer', sub: 'Rollen, inventaris, plattegronden', href: 'SAK Beheer.dc.html' + q },
+        { name: 'Mobiel', sub: 'App voor beveiligers', href: 'SAK Mobiel.dc.html' + q }
+      ],
+      accountRows: [
+        { k: 'Naam', v: 'M. de Vries', a: '' },
+        { k: 'E-mailadres', v: s.email, a: '' },
+        { k: 'Wachtwoord', v: 'Laatst gewijzigd 14 aug 2026', a: 'Wijzigen' },
+        { k: 'Tweestapsverificatie', v: 'Aan · authenticator-app', a: 'Beheren' },
+        { k: 'Toegang', v: 'Phylax: onderzoeker · SAK: meldkamer', a: '' }
+      ],
+      sessions: [
+        { device: 'Chrome op macOS', meta: 'deze sessie · Utrecht · nu', action: 'Huidig', col: '#56d38a' },
+        { device: 'SAK Mobiel op iPhone', meta: 'Rotterdam · 2 uur geleden', action: 'Afmelden', col: '#8b909b' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

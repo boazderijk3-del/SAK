@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0">
+<style>
+html,body{margin:0;height:100%;background:#0a0c0e;color:#e6e9ec;font-family:Barlow,system-ui,sans-serif}
+*{box-sizing:border-box}
+a{color:#f2b33d}a:hover{color:#ffd27a}
+button,input,select,textarea{font-family:inherit}
+input::placeholder,textarea::placeholder{color:#6b757f}
+select option{background:#0a0c0e;color:#e6e9ec}
+</style>
+<script src="./sak-store.js"></script>
+</helmet>
+<div style="display:grid;grid-template-columns:230px minmax(0,1fr);height:100vh;background:#0a0c0e">
+  <nav style="display:flex;flex-direction:column;gap:4px;border-right:1px solid #232a31;background:#0d1013;padding:16px 12px">
+    <div style="position:relative;padding:0 0 12px"><button onClick="{{ toggleApps }}" title="Wissel van programma" style="width:100%;display:flex;align-items:baseline;gap:8px;background:transparent;border:0;padding:4px 6px;cursor:pointer;color:inherit;text-align:left" style-hover="background:#12161a"><span style="font:700 22px 'JetBrains Mono',monospace;color:#f2b33d;letter-spacing:.06em">SAK</span><span style="font:600 13px 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8a949e">Beheer</span><span style="flex:1"></span><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;color:#8a949e;align-self:center;font-feature-settings:'liga'">expand_more</span></button>
+<sc-if value="{{ appsOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:calc(100% + 10px);left:0;width:290px;z-index:40;background:#12161a;border:1px solid #2c343c;padding:6px;display:flex;flex-direction:column;gap:2px;box-shadow:0 16px 40px rgba(0,0,0,.5)">
+<div style="padding:6px 10px 4px;font:600 11px 'Barlow Condensed',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8a949e">Programma</div>
+<sc-for list="{{ apps }}" as="a" hint-placeholder-count="3"><a href="{{ a.href }}" style="display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 10px;color:#e6e9ec;text-decoration:none;background:{{ a.bg }};opacity:{{ a.op }};pointer-events:{{ a.pe }}" style-hover="background:#1a1f24"><span style="width:16px;height:16px;border-radius:{{ a.rad }};border:2px solid {{ a.col }};background:{{ a.fill }}"></span><span style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:14px;font-weight:600">{{ a.name }}</span><span style="font-size:12px;color:#8a949e">{{ a.desc }}</span></span><span style="font:600 11px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#f2b33d">{{ a.mark }}</span></a></sc-for>
+<div style="padding:8px 10px 4px;border-top:1px solid #232a31;margin-top:4px;font-size:12px;color:#8a949e;line-height:1.5;display:flex;flex-direction:column;gap:6px"><span>{{ appsFoot }}</span><a href="Suite Start.dc.html" style="color:#f2b33d;text-decoration:none" style-hover="color:#ffd27a">Alle programma's</a></div>
+</div>
+</sc-if>
+</div>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="3">
+      <button onClick="{{ n.onClick }}" style="display:flex;align-items:center;gap:10px;width:100%;border:0;border-left:2px solid {{ n.bd }};background:{{ n.bg }};color:{{ n.fg }};padding:10px 10px;cursor:pointer;text-align:left;font-size:14px">
+        <span style="font-family:'Material Symbols Sharp';font-size:19px;line-height:1;font-feature-settings:'liga'">{{ n.icon }}</span>
+        <span style="flex:1">{{ n.label }}</span>
+        <span style="font:500 11px 'JetBrains Mono',monospace;color:#8a949e">{{ n.n }}</span>
+      </button>
+    </sc-for>
+    <div style="flex:1"></div>
+    <a href="SAK Meldkamer.dc.html" style="display:flex;align-items:center;gap:8px;padding:9px 10px;font-size:13px;text-decoration:none;border:1px solid #232a31"><span style="font-family:'Material Symbols Sharp';font-size:17px;line-height:1;font-feature-settings:'liga'">folder_open</span>Meldkamer · registraties</a>
+    <a href="SAK Kaart.dc.html" style="display:flex;align-items:center;gap:8px;padding:9px 10px;font-size:13px;text-decoration:none;border:1px solid #232a31"><span style="font-family:'Material Symbols Sharp';font-size:17px;line-height:1;font-feature-settings:'liga'">map</span>Kaart</a>
+    <button onClick="{{ onReset }}" style="border:0;background:transparent;color:#6b757f;padding:8px 10px;font-size:12px;text-align:left;cursor:pointer">{{ resetLabel }}</button>
+  </nav>
+
+  <main style="min-width:0;overflow-y:auto">
+    <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:1280px;padding:24px 28px 60px;display:flex;flex-direction:column;gap:20px">
+
+      <sc-if value="{{ isRoles }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <div>
+            <h1 style="margin:0;font:700 28px 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase">Rollen &amp; personeel</h1>
+            <div style="font-size:14px;color:#8a949e;margin-top:4px;text-wrap:pretty">Geef rollen jullie eigen naam en afkorting. Een rol die nog in gebruik is, zet je bij het verwijderen eerst over naar een andere rol.</div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start">
+            <section style="flex:1 1 520px;min-width:0;border:1px solid #232a31;background:#12161a">
+              <div style="display:grid;grid-template-columns:34px 96px minmax(0,1fr) 100px 40px;gap:8px;padding:10px 14px;border-bottom:1px solid #232a31;font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e"><span>Kleur</span><span>Afkorting</span><span>Rolnaam</span><span>In gebruik</span><span></span></div>
+              <sc-for list="{{ roleRows }}" as="r" hint-placeholder-count="6">
+                <div style="border-bottom:1px solid #1b2127">
+                  <div style="display:grid;grid-template-columns:34px 96px minmax(0,1fr) 100px 40px;gap:8px;align-items:center;padding:8px 14px">
+                    <button onClick="{{ r.cycleColor }}" title="Andere kleur" style="width:22px;height:22px;border:1px solid #0a0c0e;outline:1px solid #2c343c;background:{{ r.color }};cursor:pointer;padding:0"></button>
+                    <input value="{{ r.code }}" onChange="{{ r.onCode }}" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:600 13px 'JetBrains Mono',monospace">
+                    <input value="{{ r.name }}" onChange="{{ r.onName }}" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:14px">
+                    <span style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ r.countLabel }}</span>
+                    <button onClick="{{ r.onDel }}" title="Rol verwijderen" style="border:0;background:transparent;color:#8a949e;cursor:pointer;padding:4px"><span style="font-family:'Material Symbols Sharp';font-size:19px;line-height:1;font-feature-settings:'liga'">delete</span></button>
+                  </div>
+                  <sc-if value="{{ r.confirming }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 14px 10px;padding:10px 12px;border:1px solid #ff5f57;background:rgba(255,95,87,.07);font-size:13px">
+                      <span style="flex:1 1 220px">{{ r.confirmText }}</span>
+                      <select value="{{ r.to }}" data-v="{{ r.to }}" onChange="{{ r.onTo }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:6px 8px;font-size:13px"><sc-for list="{{ r.others }}" as="o" hint-placeholder-count="3"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select>
+                      <button onClick="{{ r.onConfirm }}" style="border:0;background:#ff5f57;color:#0a0c0e;padding:7px 10px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.08em;text-transform:uppercase">Overzetten en verwijderen</button>
+                      <button onClick="{{ r.onCancel }}" style="border:1px solid #2c343c;background:transparent;color:#e6e9ec;padding:6px 10px;cursor:pointer;font-size:13px">Annuleren</button>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              <div style="display:grid;grid-template-columns:34px 96px minmax(0,1fr) 140px;gap:8px;align-items:center;padding:12px 14px;background:#0f1215">
+                <button onClick="{{ cycleNewColor }}" title="Kleur" style="width:22px;height:22px;border:1px solid #0a0c0e;outline:1px solid #2c343c;background:{{ newRole.color }};cursor:pointer;padding:0"></button>
+                <input value="{{ newRole.code }}" onChange="{{ onNrCode }}" placeholder="{{ nrCodePh }}" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:600 13px 'JetBrains Mono',monospace">
+                <input value="{{ newRole.name }}" onChange="{{ onNrName }}" onKeyDown="{{ onNrKey }}" placeholder="Nieuwe rol, bijv. Toezichthouder" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:14px">
+                <button onClick="{{ addRole }}" style="border:0;background:#f2b33d;color:#0a0c0e;padding:8px 10px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">+ Rol toevoegen</button>
+              </div>
+              <sc-if value="{{ hasRoleErr }}" hint-placeholder-val="{{ false }}"><div style="padding:0 14px 12px;background:#0f1215;font-size:13px;color:#ff5f57">{{ roleErr }}</div></sc-if>
+            </section>
+
+            <section style="flex:1 1 340px;min-width:0;border:1px solid #232a31;background:#12161a">
+              <div style="padding:10px 14px;border-bottom:1px solid #232a31;font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Personeel · rol per medewerker</div>
+              <sc-for list="{{ staffRows }}" as="p" hint-placeholder-count="8">
+                <div style="display:grid;grid-template-columns:8px minmax(0,1fr) 160px;gap:10px;align-items:center;padding:7px 14px;border-bottom:1px solid #1b2127">
+                  <span style="width:8px;height:8px;background:{{ p.col }}"></span>
+                  <span style="font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ p.name }}</span>
+                  <select value="{{ p.role }}" data-v="{{ p.role }}" onChange="{{ p.onRole }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:6px 8px;font-size:13px"><sc-for list="{{ roleOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select>
+                </div>
+              </sc-for>
+            </section>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isInv }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div>
+            <h1 style="margin:0;font:700 28px 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase">Inventaris</h1>
+            <div style="font-size:14px;color:#8a949e;margin-top:4px;text-wrap:pretty">Alles wat jullie kunnen uitgeven, met jullie eigen nummering. Alleen items op deze lijst kunnen in de meldkamer en op de telefoon worden uitgegeven.</div>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="7">
+              <button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:7px;border:1px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};padding:7px 11px;cursor:pointer;font-size:13px">
+                <span style="font-family:'Material Symbols Sharp';font-size:17px;line-height:1;font-feature-settings:'liga'">{{ c.icon }}</span>{{ c.name }}<span style="font:500 11px 'JetBrains Mono',monospace;color:#8a949e">{{ c.n }}</span>
+              </button>
+            </sc-for>
+            <button onClick="{{ toggleCatForm }}" style="border:1px dashed #f2b33d;background:transparent;color:#f2b33d;padding:7px 11px;cursor:pointer;font-size:13px">+ Categorie</button>
+          </div>
+
+          <sc-if value="{{ catForm }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) 110px minmax(0,1fr) auto;gap:8px;align-items:end;padding:12px;border:1px dashed #2c343c">
+              <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Naam</span><input value="{{ newCat.name }}" onChange="{{ onNcName }}" placeholder="bijv. Zaklamp" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:14px"></label>
+              <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Prefix nummering</span><input value="{{ newCat.prefix }}" onChange="{{ onNcPrefix }}" placeholder="ZL-" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:500 13px 'JetBrains Mono',monospace"></label>
+              <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Cijfers</span><select value="{{ newCat.pad }}" data-v="{{ newCat.pad }}" onChange="{{ onNcPad }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:13px"><sc-for list="{{ padOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.label }}</option></sc-for></select></label>
+              <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Pictogram</span>
+                <div style="display:flex;flex-wrap:wrap;gap:3px"><sc-for list="{{ ncIcons }}" as="ic" hint-placeholder-count="9"><button onClick="{{ ic.onClick }}" style="width:30px;height:30px;border:1px solid {{ ic.bd }};background:#0a0c0e;color:{{ ic.fg }};cursor:pointer;padding:0;font-family:'Material Symbols Sharp';font-size:17px;line-height:1;font-feature-settings:'liga'">{{ ic.icon }}</button></sc-for></div>
+              </label>
+              <button onClick="{{ addCat }}" style="border:0;background:#f2b33d;color:#0a0c0e;padding:9px 12px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Toevoegen</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ catSel }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;padding:12px;border:1px solid #232a31;background:#0f1215">
+              <label style="display:flex;flex-direction:column;gap:5px;flex:1 1 180px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Categorienaam</span><input value="{{ selCat.name }}" onChange="{{ selCat.onName }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:14px"></label>
+              <label style="display:flex;flex-direction:column;gap:5px;flex:0 1 140px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Prefix</span><input value="{{ selCat.prefix }}" onChange="{{ selCat.onPrefix }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:500 13px 'JetBrains Mono',monospace"></label>
+              <label style="display:flex;flex-direction:column;gap:5px;flex:0 1 110px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Cijfers</span><select value="{{ selCat.pad }}" data-v="{{ selCat.pad }}" onChange="{{ selCat.onPad }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:13px"><sc-for list="{{ padOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.v }}">{{ o.label }}</option></sc-for></select></label>
+              <span style="flex:1 1 200px;font-size:12px;color:#8a949e;padding-bottom:8px">{{ selCat.hint }}</span>
+              <button onClick="{{ selCat.onDelete }}" style="border:1px solid #2c343c;background:transparent;color:{{ selCat.delFg }};padding:7px 10px;cursor:pointer;font-size:13px">{{ selCat.delLabel }}</button>
+            </div>
+          </sc-if>
+
+          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ invStats }}" as="st" hint-placeholder-count="4">
+              <div style="background:#12161a;border:1px solid #232a31;padding:10px 12px"><div style="font:600 24px 'JetBrains Mono',monospace;color:{{ st.col }}">{{ st.value }}</div><div style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e;margin-top:2px">{{ st.label }}</div></div>
+            </sc-for>
+          </div>
+
+          <section style="border:1px solid #232a31;background:#12161a;padding:14px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              <span style="font:600 13px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase">Items toevoegen</span>
+              <div style="display:flex;gap:2px;background:#0a0c0e;border:1px solid #232a31;padding:3px"><sc-for list="{{ addModes }}" as="m" hint-placeholder-count="2"><button onClick="{{ m.onClick }}" style="border:0;background:{{ m.bg }};color:{{ m.fg }};padding:5px 12px;cursor:pointer;font-size:13px">{{ m.label }}</button></sc-for></div>
+            </div>
+            <sc-if value="{{ isReeks }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;grid-template-columns:minmax(0,1.2fr) 110px 90px 90px minmax(0,1.6fr) auto;gap:8px;align-items:end">
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Categorie</span><select value="{{ nr.cat }}" data-v="{{ nr.cat }}" onChange="{{ onNrCat }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:13px"><sc-for list="{{ catOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Prefix</span><input value="{{ nr.prefix }}" onChange="{{ onNrPrefix }}" placeholder="{{ nrPrefixPh }}" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:500 13px 'JetBrains Mono',monospace"></label>
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Van nr.</span><input value="{{ nr.from }}" onChange="{{ onNrFrom }}" placeholder="{{ nrFromPh }}" inputMode="numeric" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:500 13px 'JetBrains Mono',monospace"></label>
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Tot en met</span><input value="{{ nr.to }}" onChange="{{ onNrTo }}" placeholder="{{ nrToPh }}" inputMode="numeric" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:500 13px 'JetBrains Mono',monospace"></label>
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Omschrijving</span><input value="{{ nr.label }}" onChange="{{ onNrLabel }}" placeholder="bijv. Motorola DP4400e" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:14px"></label>
+                <button onClick="{{ addRange }}" style="border:0;background:{{ rangeBtnBg }};color:#0a0c0e;padding:9px 12px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Toevoegen</button>
+              </div>
+              <div style="font:500 12px 'JetBrains Mono',monospace;color:{{ rangePrevCol }}">{{ rangePreview }}</div>
+            </sc-if>
+            <sc-if value="{{ isEnkel }}" hint-placeholder-val="{{ false }}">
+              <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.8fr) auto;gap:8px;align-items:end">
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Categorie</span><select value="{{ one.cat }}" data-v="{{ one.cat }}" onChange="{{ onOneCat }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:13px"><sc-for list="{{ catOpts }}" as="o" hint-placeholder-count="6"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select></label>
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Eigen nummer / code</span><input value="{{ one.code }}" onChange="{{ onOneCode }}" onKeyDown="{{ onOneKey }}" placeholder="{{ oneCodePh }}" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font:500 13px 'JetBrains Mono',monospace"></label>
+                <label style="display:flex;flex-direction:column;gap:5px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Omschrijving</span><input value="{{ one.label }}" onChange="{{ onOneLabel }}" onKeyDown="{{ onOneKey }}" placeholder="optioneel" style="width:100%;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:14px"></label>
+                <button onClick="{{ addOne }}" style="border:0;background:#f2b33d;color:#0a0c0e;padding:9px 12px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Toevoegen</button>
+              </div>
+            </sc-if>
+            <sc-if value="{{ hasInvErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#ff5f57">{{ invErr }}</div></sc-if>
+            <sc-if value="{{ hasInvMsg }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#4fd18b">{{ invMsg }}</div></sc-if>
+          </section>
+
+          <section style="border:1px solid #232a31;background:#12161a">
+            <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid #232a31">
+              <div style="display:flex;align-items:center;gap:6px;flex:1 1 240px;background:#0a0c0e;border:1px solid #2c343c;padding:0 8px"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga';color:#8a949e">search</span><input value="{{ q }}" onChange="{{ onQ }}" placeholder="Zoek op nummer, omschrijving of opmerking" style="flex:1;min-width:0;border:0;background:transparent;color:#e6e9ec;padding:8px 0;font-size:14px;outline:none"></div>
+              <div style="display:flex;flex-wrap:wrap;gap:2px;background:#0a0c0e;border:1px solid #232a31;padding:3px"><sc-for list="{{ stFilters }}" as="f" hint-placeholder-count="6"><button onClick="{{ f.onClick }}" style="border:0;background:{{ f.bg }};color:{{ f.fg }};padding:5px 9px;cursor:pointer;font-size:12px">{{ f.label }}</button></sc-for></div>
+              <span style="font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ invCount }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:24px 140px minmax(0,1.3fr) 140px minmax(0,1.3fr) 36px;gap:8px;padding:8px 14px;border-bottom:1px solid #232a31;font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e"><span></span><span>Nummer</span><span>Omschrijving</span><span>Status</span><span>Opmerking</span><span></span></div>
+            <sc-if value="{{ noInv }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 14px;font-size:13px;color:#8a949e">Geen items gevonden.</div></sc-if>
+            <sc-for list="{{ invRows }}" as="i" hint-placeholder-count="10">
+              <div style="display:grid;grid-template-columns:24px 140px minmax(0,1.3fr) 140px minmax(0,1.3fr) 36px;gap:8px;align-items:center;padding:5px 14px;border-bottom:1px solid #1b2127">
+                <span title="{{ i.catName }}" style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga';color:#8a949e">{{ i.icon }}</span>
+                <input value="{{ i.code }}" onChange="{{ i.onCode }}" title="{{ i.codeTitle }}" style="width:100%;background:#0a0c0e;border:1px solid {{ i.codeBd }};color:#e6e9ec;padding:6px 8px;font:600 13px 'JetBrains Mono',monospace">
+                <input value="{{ i.label }}" onChange="{{ i.onLabel }}" style="width:100%;background:transparent;border:1px solid #232a31;color:#c3cad1;padding:6px 8px;font-size:13px">
+                <select value="{{ i.status }}" data-v="{{ i.status }}" onChange="{{ i.onStatus }}" style="background:#0a0c0e;border:1px solid #2c343c;color:{{ i.stCol }};padding:6px 8px;font-size:13px"><sc-for list="{{ statusOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+                <input value="{{ i.note }}" onChange="{{ i.onNote }}" placeholder="—" style="width:100%;background:transparent;border:1px solid #232a31;color:#c3cad1;padding:6px 8px;font-size:13px">
+                <button onClick="{{ i.onDel }}" title="Verwijderen" style="border:0;background:transparent;color:#6b757f;cursor:pointer;padding:4px"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">delete</span></button>
+              </div>
+            </sc-for>
+          </section>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isPlans }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+            <div>
+              <h1 style="margin:0;font:700 28px 'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase">Plattegronden &amp; posities</h1>
+              <div style="font-size:14px;color:#8a949e;margin-top:4px;text-wrap:pretty">Per opdrachtgever of project. Voeg per verdieping een plattegrond toe en zet daar de posities op.</div>
+            </div>
+            <label style="display:flex;flex-direction:column;gap:5px;min-width:280px"><span style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e">Opdrachtgever / project</span>
+              <select value="{{ owner }}" data-v="{{ owner }}" onChange="{{ onOwner }}" style="background:#0a0c0e;border:1px solid #f2b33d;color:#e6e9ec;padding:8px 10px;font-size:14px"><sc-for list="{{ ownerOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select>
+            </label>
+          </div>
+
+          <div style="display:flex;flex-wrap:wrap;gap:2px;align-items:stretch;border-bottom:1px solid #232a31">
+            <sc-for list="{{ planTabs }}" as="t" hint-placeholder-count="2">
+              <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:8px;border:1px solid #232a31;border-bottom:2px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};padding:9px 14px;cursor:pointer;font-size:14px"><span style="font:600 11px 'JetBrains Mono',monospace;color:#8a949e">{{ t.nr }}</span>{{ t.name }}<span style="font:500 11px 'JetBrains Mono',monospace;color:#8a949e">{{ t.n }}</span></button>
+            </sc-for>
+            <label style="display:flex;align-items:center;gap:6px;border:1px dashed #f2b33d;color:#f2b33d;padding:8px 14px;cursor:pointer;font-size:14px;margin-left:4px">
+              <input type="file" accept="image/*" onChange="{{ onUpload }}" style="display:none">
+              <span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">upload</span>Plattegrond toevoegen
+            </label>
+          </div>
+          <sc-if value="{{ hasPlanErr }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#ff5f57">{{ planErr }}</div></sc-if>
+
+          <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+            <div style="flex:1 1 560px;min-width:0;display:flex;flex-direction:column;gap:10px">
+              <sc-if value="{{ noPlans }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px dashed #2c343c;padding:48px 24px;text-align:center;color:#8a949e;font-size:14px;text-wrap:pretty">Nog geen plattegrond voor {{ ownerName }}. Voeg er een toe als PNG of JPG; bij meerdere verdiepingen voeg je er meerdere toe. Posities kun je ook zonder plattegrond aanmaken.</div>
+              </sc-if>
+              <sc-if value="{{ hasPlan }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                    <input value="{{ cur.name }}" onChange="{{ onPlanName }}" style="flex:1 1 200px;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 9px;font-size:14px">
+                    <button onClick="{{ planUp }}" title="Eerder in volgorde" style="border:1px solid #2c343c;background:#151a1f;color:#e6e9ec;padding:6px;cursor:pointer"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">arrow_back</span></button>
+                    <button onClick="{{ planDown }}" title="Later in volgorde" style="border:1px solid #2c343c;background:#151a1f;color:#e6e9ec;padding:6px;cursor:pointer"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">arrow_forward</span></button>
+                    <button onClick="{{ togglePlace }}" style="display:flex;align-items:center;gap:6px;border:1px solid {{ placeBd }};background:{{ placeBg }};color:{{ placeFg }};padding:7px 12px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">add_location_alt</span>{{ placeLabel }}</button>
+                    <button onClick="{{ onDelPlan }}" style="border:1px solid #2c343c;background:transparent;color:{{ delPlanFg }};padding:7px 10px;cursor:pointer;font-size:13px">{{ delPlanLabel }}</button>
+                  </div>
+                  <sc-if value="{{ placing }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#f2b33d">{{ placeHint }}</div></sc-if>
+                  <div ref="{{ planRef }}" onClick="{{ onPlanClick }}" style="position:relative;border:1px solid #232a31;background:#0c1014;cursor:{{ planCursor }};user-select:none;touch-action:none">
+                    <sc-if value="{{ hasSrc }}" hint-placeholder-val="{{ false }}"><img ref="{{ imgRef }}" alt="{{ cur.name }}" draggable="false" style="display:block;width:100%;height:auto;pointer-events:none"></sc-if>
+                    <sc-for list="{{ markers }}" as="m" hint-placeholder-count="0">
+                      <div onPointerDown="{{ m.onDown }}" onClick="{{ m.onClick }}" title="Sleep om te verplaatsen" style="position:absolute;left:{{ m.left }};top:{{ m.top }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:grab;z-index:{{ m.z }}">
+                        <div style="width:30px;height:30px;border-radius:50%;background:{{ m.col }};color:#0a0c0e;display:flex;align-items:center;justify-content:center;box-shadow:{{ m.ring }}"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">{{ m.icon }}</span></div>
+                        <div style="background:rgba(10,12,14,.9);border:1px solid {{ m.lblBd }};padding:2px 6px;font:600 11px 'Barlow Condensed',sans-serif;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;color:#e6e9ec">{{ m.name }}</div>
+                      </div>
+                    </sc-for>
+                    <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;left:{{ pendLeft }};top:{{ pendTop }};transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;border:2px dashed #f2b33d;background:rgba(242,179,61,.2)"></div>
+                    </sc-if>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+
+            <aside style="flex:1 1 300px;max-width:420px;min-width:0;display:flex;flex-direction:column;gap:12px">
+              <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid #f2b33d;background:#12161a;padding:12px;display:flex;flex-direction:column;gap:8px">
+                  <div style="font:600 13px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#f2b33d">Nieuwe positie op deze plek</div>
+                  <input value="{{ newPos.name }}" onChange="{{ onNpName }}" onKeyDown="{{ onNpKey }}" placeholder="Naam, bijv. Deur 2 · zij-ingang" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:8px 9px;font-size:14px">
+                  <div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ npTypes }}" as="t" hint-placeholder-count="7"><button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:5px;border:1px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};padding:5px 8px;cursor:pointer;font-size:12px"><span style="font-family:'Material Symbols Sharp';font-size:15px;line-height:1;font-feature-settings:'liga';color:{{ t.col }}">{{ t.icon }}</span>{{ t.name }}</button></sc-for></div>
+                  <div style="display:flex;gap:6px"><button onClick="{{ createPos }}" style="flex:1;border:0;background:#f2b33d;color:#0a0c0e;padding:8px;cursor:pointer;font:700 12px 'Barlow Condensed',sans-serif;letter-spacing:.1em;text-transform:uppercase">Positie plaatsen</button><button onClick="{{ cancelPending }}" style="border:1px solid #2c343c;background:transparent;color:#e6e9ec;padding:7px 10px;cursor:pointer;font-size:13px">Annuleren</button></div>
+                  <sc-if value="{{ hasUnplaced }}" hint-placeholder-val="{{ false }}">
+                    <select value="" onChange="{{ placeExisting }}" style="background:#0a0c0e;border:1px dashed #2c343c;color:#c3cad1;padding:7px 8px;font-size:13px"><option value="">…of een bestaande positie hier plaatsen</option><sc-for list="{{ unplacedOpts }}" as="o" hint-placeholder-count="2"><option value="{{ o.id }}">{{ o.name }}</option></sc-for></select>
+                  </sc-if>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ hasSel }}" hint-placeholder-val="{{ false }}">
+                <div style="border:1px solid #232a31;background:#12161a;padding:12px;display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;align-items:center;gap:8px"><span style="width:26px;height:26px;border-radius:50%;background:{{ sel.col }};color:#0a0c0e;display:flex;align-items:center;justify-content:center;font-family:'Material Symbols Sharp';font-size:16px;line-height:1;font-feature-settings:'liga'">{{ sel.icon }}</span><span style="flex:1;font:500 12px 'JetBrains Mono',monospace;color:#8a949e">{{ sel.where }}</span><button onClick="{{ sel.onClose }}" style="border:0;background:transparent;color:#8a949e;cursor:pointer;padding:2px"><span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga'">close</span></button></div>
+                  <input value="{{ sel.name }}" onChange="{{ sel.onName }}" style="background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:8px 9px;font-size:15px;font-weight:600">
+                  <div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ sel.types }}" as="t" hint-placeholder-count="7"><button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:5px;border:1px solid {{ t.bd }};background:{{ t.bg }};color:{{ t.fg }};padding:5px 8px;cursor:pointer;font-size:12px"><span style="font-family:'Material Symbols Sharp';font-size:15px;line-height:1;font-feature-settings:'liga';color:{{ t.col }}">{{ t.icon }}</span>{{ t.name }}</button></sc-for></div>
+                  <div>
+                    <div style="font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e;margin-bottom:6px">Bezetting</div>
+                    <div style="display:flex;flex-direction:column;gap:4px">
+                      <sc-if value="{{ sel.noStaff }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:#8a949e">Nog niemand ingedeeld.</div></sc-if>
+                      <sc-for list="{{ sel.staff }}" as="p" hint-placeholder-count="2"><div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #232a31;font-size:13px"><span style="font:600 10px 'JetBrains Mono',monospace;color:{{ p.col }};min-width:34px">{{ p.code }}</span><span style="flex:1">{{ p.name }}</span><button onClick="{{ p.onRemove }}" style="border:0;background:transparent;color:#8a949e;cursor:pointer;padding:0"><span style="font-family:'Material Symbols Sharp';font-size:16px;line-height:1;font-feature-settings:'liga'">close</span></button></div></sc-for>
+                    </div>
+                    <select value="" onChange="{{ sel.onAddStaff }}" style="margin-top:6px;width:100%;background:#0a0c0e;border:1px dashed #f2b33d;color:#f2b33d;padding:7px 8px;font-size:13px"><option value="">+ Medewerker indelen…</option><sc-for list="{{ sel.staffOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.id }}">{{ o.label }}</option></sc-for></select>
+                  </div>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    <sc-if value="{{ sel.canPlace }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sel.onPlace }}" style="border:1px solid #f2b33d;background:transparent;color:#f2b33d;padding:6px 10px;cursor:pointer;font-size:13px">Op deze plattegrond zetten</button></sc-if>
+                    <sc-if value="{{ sel.placed }}" hint-placeholder-val="{{ false }}"><button onClick="{{ sel.onUnplace }}" style="border:1px solid #2c343c;background:transparent;color:#e6e9ec;padding:6px 10px;cursor:pointer;font-size:13px">Van plattegrond halen</button></sc-if>
+                    <button onClick="{{ sel.onDelete }}" style="border:1px solid #2c343c;background:transparent;color:{{ sel.delFg }};padding:6px 10px;cursor:pointer;font-size:13px">{{ sel.delLabel }}</button>
+                  </div>
+                </div>
+              </sc-if>
+
+              <div style="border:1px solid #232a31;background:#12161a">
+                <div style="display:flex;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #232a31;font:600 10px 'Barlow Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#8a949e"><span>Posities · {{ ownerName }}</span><span style="font-family:'JetBrains Mono',monospace">{{ posCount }}</span></div>
+                <sc-for list="{{ posRows }}" as="p" hint-placeholder-count="6">
+                  <button onClick="{{ p.onClick }}" style="display:flex;align-items:center;gap:10px;width:100%;border:0;border-bottom:1px solid #1b2127;border-left:2px solid {{ p.bd }};background:{{ p.bg }};color:#e6e9ec;padding:8px 12px;cursor:pointer;text-align:left">
+                    <span style="font-family:'Material Symbols Sharp';font-size:18px;line-height:1;font-feature-settings:'liga';color:{{ p.col }}">{{ p.icon }}</span>
+                    <span style="flex:1;min-width:0"><span style="display:block;font-size:14px">{{ p.name }}</span><span style="display:block;font-size:12px;color:{{ p.subCol }}">{{ p.sub }}</span></span>
+                    <span style="font:500 11px 'JetBrains Mono',monospace;color:#8a949e">{{ p.staffN }}</span>
+                  </button>
+                </sc-for>
+                <div style="display:flex;gap:6px;padding:10px 12px">
+                  <input value="{{ looseName }}" onChange="{{ onLoose }}" onKeyDown="{{ onLooseKey }}" placeholder="Positie zonder plattegrond" style="flex:1;min-width:0;background:#0a0c0e;border:1px solid #2c343c;color:#e6e9ec;padding:7px 8px;font-size:13px">
+                  <button onClick="{{ addLoose }}" style="border:1px solid #f2b33d;background:transparent;color:#f2b33d;padding:6px 10px;cursor:pointer;font-size:13px">+ Toevoegen</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PT={Deur:['door_front','#f2b33d'],Post:['shield_person','#5cc8ff'],Bar:['local_bar','#c792ea'],EHBO:['medical_services','#4fd18b'],Nooduitgang:['exit_to_app','#ff5f57'],Meldkamer:['headset_mic','#f2d64b'],Overig:['flag','#9aa4ad']};
+const SW=['#f2b33d','#5cc8ff','#ff5f57','#4fd18b','#c792ea','#f2d64b','#9aa4ad','#ff9f43'];
+const STC={Beschikbaar:'#4fd18b',Uitgegeven:'#5cc8ff',Onderhoud:'#f2d64b',Defect:'#ff9f43',Kwijt:'#ff5f57'};
+const ICONS=['settings_input_antenna','earbuds','checkroom','key','videocam','medical_services','badge','flashlight_on','inventory_2','battery_charging_full'];
+const pad=(n,p)=>String(n).padStart(p,'0');
+const clamp=v=>Math.max(0,Math.min(100,v));
+const SUITE=[{k:'phylax',name:'Phylax',desc:'Onderzoek, casussen en rapportage',href:'Phylax v3.dc.html',col:'#35d0c4',fill:'transparent',rad:'5px'},{k:'sak',name:'SAK',desc:'Meldkamer, kaart en beheer op locatie',href:'SAK Meldkamer.dc.html',col:'#f2b33d',fill:'#f2b33d',rad:'3px'},{k:'ophanim',name:'Ophanim',desc:'Nog geen ontwerp in dit prototype',href:'#',col:'#8a949e',fill:'transparent',rad:'50%',off:true}];
+const suite=(cur,sel,mark)=>SUITE.map(a=>{const c=a.k===cur;return{...a,bg:c?sel:'transparent',mark:c?mark:a.off?'later':'',op:a.off?.5:1,pe:c||a.off?'none':'auto',href:c?'#':a.href};});
+class Component extends DCLogic {
+  state={d:window.SAK?window.SAK.get():null,sec:'roles',delRole:null,newRole:{name:'',code:'',color:SW[1]},roleErr:'',
+    cat:'all',q:'',stF:'all',addMode:'reeks',nr:{cat:'C-PORTO',prefix:'',from:'',to:'',label:''},one:{cat:'C-PORTO',code:'',label:''},invErr:'',invMsg:'',catForm:false,newCat:{name:'',prefix:'',icon:'inventory_2',pad:3},delCat:false,
+    owner:'PJ-SOOS',plan:null,placing:false,placeTarget:null,pending:null,selPos:null,newPos:{name:'',type:'Post'},drag:null,planErr:'',delPlan:false,delPos:false,looseName:'',confirmReset:false};
+  planRef=React.createRef();imgRef=React.createRef();curSrc='';
+  componentDidMount(){const hook=()=>{this.setState({d:SAK.get()});this.off=SAK.on(d=>this.setState({d}));};this.syncSel();if(window.SAK)hook();else window.addEventListener('sak-ready',hook,{once:true});}
+  componentWillUnmount(){this.off&&this.off();}
+  componentDidUpdate(){this.syncSel();}
+  syncSel(){requestAnimationFrame(()=>{const im=this.imgRef.current;if(im&&this.curSrc&&im.getAttribute('src')!==this.curSrc)im.src=this.curSrc;});requestAnimationFrame(()=>document.querySelectorAll('select[data-v]').forEach(el=>{const v=el.getAttribute('data-v');if(v!=null&&el.value!==v&&[...el.options].some(o=>o.value===v))el.value=v;}));}
+  up(fn){return window.SAK.set(fn);}
+  xy(e){const r=this.planRef.current.getBoundingClientRect();return {x:+clamp((e.clientX-r.left)/r.width*100).toFixed(1),y:+clamp((e.clientY-r.top)/r.height*100).toFixed(1)};}
+  renderVals(){const r=this._rv(),st=this.state;return{...r,appsOpen:!!st.appsOpen,toggleApps:()=>this.setState(x=>({appsOpen:!x.appsOpen})),apps:suite('sak','#1a1f24','huidig'),appsFoot:'Zelfde login. Het gekozen project gaat mee naar Phylax als opdrachtgever.'};}
+  _rv(){
+    const s=this.state,d=s.d;
+    if(!d)return {ready:false};
+    const o={ready:true};o.selKey=s.sec;
+    const ss=p=>this.setState(p);
+    o.navItems=[['roles','badge','Rollen & personeel',d.roles.length],['inv','inventory_2','Inventaris',d.items.length],['plans','map','Plattegronden & posities',d.plans.length]].map(([id,icon,label,n])=>{const on=s.sec===id;return {icon,label,n,bg:on?'rgba(242,179,61,.08)':'transparent',fg:on?'#f2b33d':'#c3cad1',bd:on?'#f2b33d':'transparent',onClick:()=>ss({sec:id})};});
+    o.resetLabel=s.confirmReset?'Zeker? Klik nogmaals om te herstellen':'Voorbeelddata herstellen';
+    o.onReset=()=>{if(s.confirmReset){SAK.reset();ss({confirmReset:false,plan:null,selPos:null});}else{ss({confirmReset:true});setTimeout(()=>this.setState({confirmReset:false}),4000);}};
+    o.isRoles=s.sec==='roles';o.isInv=s.sec==='inv';o.isPlans=s.sec==='plans';
+    const roleBy=Object.fromEntries(d.roles.map(r=>[r.id,r]));
+
+    // Rollen
+    const cnt=id=>d.staff.filter(x=>x.role===id).length;
+    const setRole=(id,p)=>this.up(x=>{Object.assign(x.roles.find(z=>z.id===id),p);});
+    o.roleRows=d.roles.map(r=>{const n=cnt(r.id),dr=!!(s.delRole&&s.delRole.id===r.id);return {name:r.name,code:r.code,color:r.color,countLabel:n+(n===1?' persoon':' personen'),
+      onName:e=>setRole(r.id,{name:e.target.value}),onCode:e=>setRole(r.id,{code:e.target.value.toUpperCase().slice(0,6)}),
+      cycleColor:()=>setRole(r.id,{color:SW[(SW.indexOf(r.color)+1)%SW.length]}),
+      onDel:()=>{if(d.roles.length<=1)return;if(!n)this.up(x=>{x.roles=x.roles.filter(z=>z.id!==r.id);});else ss({delRole:{id:r.id,to:d.roles.find(z=>z.id!==r.id).id}});},
+      confirming:dr,others:d.roles.filter(z=>z.id!==r.id).map(z=>({id:z.id,name:z.name})),to:dr?s.delRole.to:'',
+      confirmText:n+(n===1?' medewerker heeft':' medewerkers hebben')+' de rol '+r.name+'. Overzetten naar:',
+      onTo:e=>{const v=e.target.value;this.setState(st=>({delRole:{...st.delRole,to:v}}));},
+      onConfirm:()=>{const to=s.delRole.to;this.up(x=>{x.staff.forEach(p=>{if(p.role===r.id)p.role=to;});x.roles=x.roles.filter(z=>z.id!==r.id);});ss({delRole:null});},
+      onCancel:()=>ss({delRole:null})};});
+    const nR=s.newRole,setNR=p=>this.setState(st=>({newRole:{...st.newRole,...p},roleErr:''}));
+    o.newRole=nR;o.nrCodePh=(nR.name.trim().slice(0,3)||'ABC').toUpperCase();
+    o.onNrName=e=>setNR({name:e.target.value});o.onNrCode=e=>setNR({code:e.target.value.toUpperCase().slice(0,6)});
+    o.cycleNewColor=()=>setNR({color:SW[(SW.indexOf(nR.color)+1)%SW.length]});
+    o.addRole=()=>{const nm=nR.name.trim();if(!nm)return ss({roleErr:'Vul een rolnaam in.'});if(d.roles.some(r=>r.name.toLowerCase()===nm.toLowerCase()))return ss({roleErr:'Deze rol bestaat al.'});
+      this.up(x=>{x.roles.push({id:SAK.uid('R'),name:nm,code:(nR.code.trim()||nm.slice(0,3)).toUpperCase(),color:nR.color});});ss({newRole:{name:'',code:'',color:SW[(SW.indexOf(nR.color)+1)%SW.length]},roleErr:''});};
+    o.onNrKey=e=>{if(e.key==='Enter')o.addRole();};
+    o.hasRoleErr=!!s.roleErr;o.roleErr=s.roleErr;
+    o.roleOpts=d.roles.map(r=>({id:r.id,label:r.code+' · '+r.name}));
+    o.staffRows=d.staff.map(p=>({name:p.name,role:p.role,col:(roleBy[p.role]||{}).color||'#6b757f',onRole:e=>{const v=e.target.value;this.up(x=>{x.staff.find(z=>z.id===p.id).role=v;});}}));
+
+    // Inventaris
+    const cats=d.invCats,catBy=Object.fromEntries(cats.map(c=>[c.id,c]));
+    o.catChips=[{id:'all',name:'Alles',icon:'apps',n:d.items.length},...cats.map(c=>({id:c.id,name:c.name,icon:c.icon,n:d.items.filter(i=>i.cat===c.id).length}))].map(c=>{const on=s.cat===c.id;return {...c,bg:on?'rgba(242,179,61,.12)':'#12161a',fg:on?'#f2b33d':'#c3cad1',bd:on?'#f2b33d':'#232a31',onClick:()=>{const p={cat:c.id,delCat:false};if(c.id!=='all'){p.nr={...s.nr,cat:c.id,prefix:'',from:'',to:''};p.one={...s.one,cat:c.id};}ss(p);}};});
+    o.catForm=s.catForm;o.toggleCatForm=()=>ss({catForm:!s.catForm});
+    const nc=s.newCat,setNC=p=>this.setState(st=>({newCat:{...st.newCat,...p}}));o.newCat=nc;
+    o.onNcName=e=>setNC({name:e.target.value});o.onNcPrefix=e=>setNC({prefix:e.target.value.toUpperCase()});o.onNcPad=e=>setNC({pad:+e.target.value});
+    o.padOpts=[1,2,3,4].map(v=>({v,label:v+' ('+pad(1,v)+')'}));
+    o.ncIcons=ICONS.map(icon=>({icon,bd:nc.icon===icon?'#f2b33d':'#2c343c',fg:nc.icon===icon?'#f2b33d':'#8a949e',onClick:()=>setNC({icon})}));
+    o.addCat=()=>{const nm=nc.name.trim();if(!nm)return;const id=SAK.uid('C');this.up(x=>{x.invCats.push({id,name:nm,prefix:nc.prefix.trim()||nm.slice(0,3).toUpperCase()+'-',icon:nc.icon,pad:nc.pad});});ss({catForm:false,newCat:{name:'',prefix:'',icon:'inventory_2',pad:3},cat:id,nr:{...s.nr,cat:id,prefix:'',from:'',to:''},one:{...s.one,cat:id}});};
+    o.catSel=s.cat!=='all'&&!!catBy[s.cat];
+    if(o.catSel){const c=catBy[s.cat],n=d.items.filter(i=>i.cat===c.id).length,setC=p=>this.up(x=>{Object.assign(x.invCats.find(z=>z.id===c.id),p);});
+      o.selCat={name:c.name,prefix:c.prefix,pad:c.pad,onName:e=>setC({name:e.target.value}),onPrefix:e=>setC({prefix:e.target.value.toUpperCase()}),onPad:e=>setC({pad:+e.target.value}),
+        hint:'Prefix en cijfers gelden voor nieuwe nummers, bijv. '+c.prefix+pad(1,c.pad)+'. Bestaande nummers blijven staan.',
+        delLabel:n?'Categorie bevat '+n+' items':(s.delCat?'Klik nogmaals om te verwijderen':'Categorie verwijderen'),delFg:n?'#6b757f':(s.delCat?'#ff5f57':'#e6e9ec'),
+        onDelete:()=>{if(n)return;if(!s.delCat)return ss({delCat:true});this.up(x=>{x.invCats=x.invCats.filter(z=>z.id!==c.id);});ss({cat:'all',delCat:false});}};}
+    else o.selCat={};
+    const scope=d.items.filter(i=>s.cat==='all'||i.cat===s.cat);
+    const nb=st=>scope.filter(i=>i.status===st).length;
+    o.invStats=[{value:scope.length,label:'Totaal',col:'#e6e9ec'},{value:nb('Beschikbaar'),label:'Beschikbaar',col:STC.Beschikbaar},{value:nb('Uitgegeven'),label:'Uitgegeven',col:STC.Uitgegeven},{value:nb('Onderhoud')+nb('Defect')+nb('Kwijt'),label:'Niet inzetbaar',col:STC.Kwijt}];
+    o.addModes=[['reeks','Reeks nummers'],['enkel','Eén item']].map(([id,label])=>({label,bg:s.addMode===id?'#f2b33d':'transparent',fg:s.addMode===id?'#0a0c0e':'#c3cad1',onClick:()=>ss({addMode:id,invErr:'',invMsg:''})}));
+    o.isReeks=s.addMode==='reeks';o.isEnkel=s.addMode==='enkel';
+    o.catOpts=cats.map(c=>({id:c.id,name:c.name}));
+    const codeSet=new Set(d.items.map(i=>i.code.toLowerCase()));
+    const nextNo=(c,pre)=>{let m=0;d.items.forEach(i=>{if(i.cat===c.id&&i.code.startsWith(pre)){const k=parseInt(i.code.slice(pre.length));if(k>m)m=k;}});return m+1;};
+    const nr=s.nr,nc2=catBy[nr.cat]||cats[0],setR=p=>this.setState(st=>({nr:{...st.nr,...p},invErr:'',invMsg:''}));
+    const pre=nr.prefix!==''?nr.prefix:(nc2?nc2.prefix:''),nx=nc2?nextNo(nc2,pre):1,f=nr.from===''?nx:parseInt(nr.from),t=nr.to===''?NaN:parseInt(nr.to),pd=nc2?nc2.pad:3;
+    const valid=nc2&&Number.isFinite(f)&&Number.isFinite(t)&&t>=f&&t-f<500;
+    const codes=valid?Array.from({length:t-f+1},(_,k)=>pre+pad(f+k,pd)):[];
+    const dups=codes.filter(c=>codeSet.has(c.toLowerCase()));
+    o.nr=nr;o.nrPrefixPh=nc2?nc2.prefix:'';o.nrFromPh=String(nx);o.nrToPh=String(nx+9);
+    o.rangePreview=valid?codes[0]+(codes.length>1?' t/m '+codes[codes.length-1]:'')+' · '+(codes.length-dups.length)+' nieuw'+(dups.length?' · '+dups.length+' bestaan al en worden overgeslagen':''):(nr.to===''?'Vul in tot welk nummer je wilt toevoegen. Voorbeeld: '+pre+pad(nx,pd)+' t/m '+pre+pad(nx+9,pd):'Controleer de nummers (max. 500 per keer).');
+    o.rangePrevCol=valid?'#c3cad1':'#8a949e';o.rangeBtnBg=valid&&codes.length>dups.length?'#f2b33d':'#5b646d';
+    o.onNrCat=e=>setR({cat:e.target.value,prefix:'',from:'',to:''});o.onNrPrefix=e=>setR({prefix:e.target.value.toUpperCase()});
+    o.onNrFrom=e=>setR({from:e.target.value.replace(/\D/g,'')});o.onNrTo=e=>setR({to:e.target.value.replace(/\D/g,'')});o.onNrLabel=e=>setR({label:e.target.value});
+    o.addRange=()=>{if(!valid)return ss({invErr:'Vul geldige nummers in.'});const add=codes.filter(c=>!codeSet.has(c.toLowerCase()));if(!add.length)return ss({invErr:'Al deze nummers bestaan al.'});
+      this.up(x=>{add.forEach(code=>x.items.push({id:SAK.uid('I'),cat:nc2.id,code,label:nr.label.trim()||nc2.name,status:'Beschikbaar',note:''}));});
+      ss({nr:{...nr,from:'',to:''},invErr:'',invMsg:add.length+' '+nc2.name.toLowerCase()+(add.length===1?'':'s')+' toegevoegd: '+add[0]+(add.length>1?' t/m '+add[add.length-1]:''),cat:s.cat==='all'?'all':nc2.id});};
+    const one=s.one,oc=catBy[one.cat]||cats[0],setO=p=>this.setState(st=>({one:{...st.one,...p},invErr:'',invMsg:''}));
+    o.one=one;o.oneCodePh=oc?oc.prefix+pad(nextNo(oc,oc.prefix),oc.pad):'';
+    o.onOneCat=e=>setO({cat:e.target.value});o.onOneCode=e=>setO({code:e.target.value.toUpperCase()});o.onOneLabel=e=>setO({label:e.target.value});
+    o.addOne=()=>{const code=one.code.trim()||o.oneCodePh;if(!code||!oc)return;if(codeSet.has(code.toLowerCase()))return ss({invErr:'Nummer '+code+' bestaat al.'});
+      this.up(x=>{x.items.push({id:SAK.uid('I'),cat:oc.id,code,label:one.label.trim()||oc.name,status:'Beschikbaar',note:''});});ss({one:{...one,code:'',label:''},invMsg:code+' toegevoegd.'});};
+    o.onOneKey=e=>{if(e.key==='Enter')o.addOne();};
+    o.hasInvErr=!!s.invErr;o.invErr=s.invErr;o.hasInvMsg=!!s.invMsg&&!s.invErr;o.invMsg=s.invMsg;
+    o.q=s.q;o.onQ=e=>ss({q:e.target.value});
+    o.stFilters=['all','Beschikbaar','Uitgegeven','Onderhoud','Defect','Kwijt'].map(st=>({label:st==='all'?'Alle':st,bg:s.stF===st?'#232a31':'transparent',fg:s.stF===st?(STC[st]||'#e6e9ec'):'#8a949e',onClick:()=>ss({stF:st})}));
+    const q=s.q.trim().toLowerCase();
+    const rows=scope.filter(i=>(s.stF==='all'||i.status===s.stF)&&(!q||(i.code+' '+i.label+' '+i.note).toLowerCase().includes(q))).sort((a,b)=>a.cat.localeCompare(b.cat)||a.code.localeCompare(b.code,'nl',{numeric:true}));
+    o.invCount=rows.length+' van '+scope.length;o.noInv=!rows.length;
+    o.statusOpts=Object.keys(STC);
+    const setI=(id,p)=>this.up(x=>{Object.assign(x.items.find(z=>z.id===id),p);});
+    o.invRows=rows.map(i=>{const dup=d.items.some(z=>z.id!==i.id&&z.code.toLowerCase()===i.code.toLowerCase());const c=catBy[i.cat]||{};return {code:i.code,label:i.label,note:i.note,status:i.status,stCol:STC[i.status],icon:c.icon||'inventory_2',catName:c.name||'',
+      codeBd:dup?'#ff5f57':'#2c343c',codeTitle:dup?'Dit nummer komt vaker voor':'',
+      onCode:e=>setI(i.id,{code:e.target.value.toUpperCase()}),onLabel:e=>setI(i.id,{label:e.target.value}),onNote:e=>setI(i.id,{note:e.target.value}),onStatus:e=>setI(i.id,{status:e.target.value}),
+      onDel:()=>this.up(x=>{x.items=x.items.filter(z=>z.id!==i.id);})};});
+
+    // Plattegronden & posities
+    const owners=[];d.clients.forEach(c=>{owners.push({id:c.id,label:c.name+' · hele organisatie'});d.projects.filter(p=>p.client===c.id).forEach(p=>owners.push({id:p.id,label:'— '+p.name}));});
+    o.ownerOpts=owners;o.owner=s.owner;
+    const ownC=d.clients.find(c=>c.id===s.owner),ownP=d.projects.find(p=>p.id===s.owner);o.ownerName=ownC?ownC.name:(ownP?ownP.name:'');
+    o.onOwner=e=>ss({owner:e.target.value,plan:null,selPos:null,pending:null,placing:false,placeTarget:null,planErr:''});
+    const plans=d.plans.filter(p=>p.owner===s.owner).sort((a,b)=>a.order-b.order);
+    const cur=plans.find(p=>p.id===s.plan)||plans[0];
+    const poss=d.positions.filter(p=>p.owner===s.owner),posBy=Object.fromEntries(d.positions.map(p=>[p.id,p]));
+    const planOf=pid=>plans.find(pl=>pl.markers.some(m=>m.pos===pid));
+    o.planTabs=plans.map((p,k)=>{const on=cur&&p.id===cur.id;return {nr:String(k+1).padStart(2,'0'),name:p.name,n:p.markers.length,bg:on?'#12161a':'transparent',fg:on?'#e6e9ec':'#8a949e',bd:on?'#f2b33d':'transparent',onClick:()=>ss({plan:p.id,pending:null,placing:false,placeTarget:null,delPlan:false})};});
+    o.noPlans=!plans.length;o.hasPlan=!!cur;o.hasSrc=!!(cur&&cur.src);this.curSrc=cur?cur.src:'';o.imgRef=this.imgRef;o.cur=cur||{name:'',src:''};
+    o.hasPlanErr=!!s.planErr;o.planErr=s.planErr;
+    o.onUpload=e=>{const fl=e.target.files&&e.target.files[0];e.target.value='';if(!fl)return;const owner=s.owner;
+      SAK.downscale(fl).then(src=>{const id=SAK.uid('PL');const ok=this.up(x=>{const ord=Math.max(-1,...x.plans.filter(p=>p.owner===owner).map(p=>p.order))+1;x.plans.push({id,owner,name:fl.name.replace(/\.[^.]+$/,''),order:ord,src,markers:[]});});
+        this.setState(ok?{plan:id,planErr:''}:{planErr:'Opslag is vol. Verwijder een plattegrond of gebruik een kleiner bestand.'});}).catch(()=>this.setState({planErr:'Bestand kon niet worden gelezen. Gebruik PNG of JPG.'}));};
+    if(cur){
+      const setP=p=>this.up(x=>{Object.assign(x.plans.find(z=>z.id===cur.id),p);});
+      o.onPlanName=e=>setP({name:e.target.value});
+      const swap=dir=>{const k=plans.indexOf(cur),j=k+dir;if(j<0||j>=plans.length)return;const a=cur.id,b=plans[j].id;this.up(x=>{const A=x.plans.find(z=>z.id===a),B=x.plans.find(z=>z.id===b);const t=A.order;A.order=B.order;B.order=t;if(A.order===B.order)A.order+=dir;});};
+      o.planUp=()=>swap(-1);o.planDown=()=>swap(1);
+      o.delPlanLabel=s.delPlan?'Zeker? Klik nogmaals':'Plattegrond verwijderen';o.delPlanFg=s.delPlan?'#ff5f57':'#8a949e';
+      o.onDelPlan=()=>{if(!s.delPlan){ss({delPlan:true});setTimeout(()=>this.setState({delPlan:false}),4000);return;}this.up(x=>{x.plans=x.plans.filter(z=>z.id!==cur.id);});ss({delPlan:false,plan:null,pending:null});};
+      o.placing=s.placing;o.placeLabel=s.placing?'Plaatsen stoppen':'Positie plaatsen';
+      o.placeBg=s.placing?'#f2b33d':'#151a1f';o.placeFg=s.placing?'#0a0c0e':'#e6e9ec';o.placeBd=s.placing?'#f2b33d':'#2c343c';
+      o.placeHint=s.placeTarget&&posBy[s.placeTarget]?'Klik op de plattegrond waar "'+posBy[s.placeTarget].name+'" moet komen.':'Klik op de plattegrond om een positie te plaatsen. Bestaande posities kun je slepen.';
+      o.togglePlace=()=>ss({placing:!s.placing,pending:null,placeTarget:null});
+      o.planCursor=s.placing?'crosshair':'default';
+      o.onPlanClick=e=>{if(!s.placing){ss({selPos:null,pending:null});return;}const p=this.xy(e);
+        if(s.placeTarget){const tid=s.placeTarget;this.up(x=>{x.plans.forEach(pl=>{pl.markers=pl.markers.filter(m=>m.pos!==tid);});x.plans.find(z=>z.id===cur.id).markers.push({pos:tid,...p});});ss({placing:false,placeTarget:null,selPos:tid});}
+        else ss({pending:p,selPos:null});};
+      o.markers=cur.markers.map(m=>{const p=posBy[m.pos];if(!p)return null;const dg=s.drag&&s.drag.pos===m.pos?s.drag:m,[icon,col]=PT[p.type]||PT.Overig,sel=s.selPos===m.pos;
+        return {left:dg.x+'%',top:dg.y+'%',icon,col,name:p.name,z:sel?3:2,ring:sel?'0 0 0 3px #0a0c0e, 0 0 0 5px #f2b33d':'0 0 0 2px #0a0c0e',lblBd:sel?'#f2b33d':'#2c343c',
+          onClick:e=>e.stopPropagation(),
+          onDown:e=>{e.stopPropagation();e.preventDefault();const sx=e.clientX,sy=e.clientY;let moved=false;
+            const mv=ev=>{if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)<4)return;moved=true;this.setState({drag:{pos:m.pos,...this.xy(ev)}});};
+            const upf=ev=>{window.removeEventListener('pointermove',mv);window.removeEventListener('pointerup',upf);
+              if(moved){const q=this.xy(ev);this.up(x=>{const mk=x.plans.find(z=>z.id===cur.id).markers.find(z=>z.pos===m.pos);mk.x=q.x;mk.y=q.y;});this.setState({drag:null,selPos:m.pos,pending:null});}
+              else this.setState({selPos:m.pos,pending:null,delPos:false});};
+            window.addEventListener('pointermove',mv);window.addEventListener('pointerup',upf);}};}).filter(Boolean);
+    } else {o.markers=[];o.placing=false;}
+    o.hasPending=!!s.pending&&!!cur;o.pendLeft=s.pending?s.pending.x+'%':'0';o.pendTop=s.pending?s.pending.y+'%':'0';
+    const np=s.newPos,setNP=p=>this.setState(st=>({newPos:{...st.newPos,...p}}));o.newPos=np;
+    const typeBtns=(curT,fn)=>Object.keys(PT).map(name=>{const on=curT===name;return {name,icon:PT[name][0],col:PT[name][1],bg:on?'rgba(242,179,61,.12)':'transparent',fg:on?'#f2b33d':'#c3cad1',bd:on?'#f2b33d':'#2c343c',onClick:()=>fn(name)};});
+    o.npTypes=typeBtns(np.type,type=>setNP({type}));
+    o.onNpName=e=>setNP({name:e.target.value});
+    o.createPos=()=>{const nm=np.name.trim();if(!nm||!s.pending||!cur)return;const id=SAK.uid('P'),pp=s.pending;this.up(x=>{x.positions.push({id,owner:s.owner,name:nm,type:np.type,staff:[]});x.plans.find(z=>z.id===cur.id).markers.push({pos:id,...pp});});ss({pending:null,selPos:id,newPos:{name:'',type:np.type}});};
+    o.onNpKey=e=>{if(e.key==='Enter')o.createPos();};
+    o.cancelPending=()=>ss({pending:null});
+    const unplaced=poss.filter(p=>!planOf(p.id));
+    o.hasUnplaced=unplaced.length>0;o.unplacedOpts=unplaced.map(p=>({id:p.id,name:p.name}));
+    o.placeExisting=e=>{const id=e.target.value;if(!id||!s.pending||!cur)return;const pp=s.pending;this.up(x=>{x.plans.find(z=>z.id===cur.id).markers.push({pos:id,...pp});});ss({pending:null,selPos:id});};
+    const sp=posBy[s.selPos];o.hasSel=!!sp&&sp.owner===s.owner;
+    if(o.hasSel){const pl=planOf(sp.id),[icon,col]=PT[sp.type]||PT.Overig,setS=p=>this.up(x=>{Object.assign(x.positions.find(z=>z.id===sp.id),p);});
+      o.sel={name:sp.name,icon,col,where:pl?'Op: '+pl.name:'Niet op een plattegrond',onClose:()=>ss({selPos:null}),onName:e=>setS({name:e.target.value}),
+        types:typeBtns(sp.type,type=>setS({type})),
+        staff:sp.staff.map(id=>{const p=d.staff.find(z=>z.id===id)||{name:id},r=roleBy[p.role]||{};return {name:p.name,code:r.code||'',col:r.color||'#8a949e',onRemove:()=>this.up(x=>{const q=x.positions.find(z=>z.id===sp.id);q.staff=q.staff.filter(z=>z!==id);})};}),
+        noStaff:!sp.staff.length,
+        staffOpts:d.staff.filter(p=>!sp.staff.includes(p.id)).map(p=>{const other=d.positions.find(q=>q.id!==sp.id&&q.staff.includes(p.id));return {id:p.id,label:p.name+' · '+((roleBy[p.role]||{}).name||'')+(other?' (nu: '+other.name+')':'')};}),
+        onAddStaff:e=>{const id=e.target.value;if(!id)return;this.up(x=>{x.positions.forEach(q=>{q.staff=q.staff.filter(z=>z!==id);});x.positions.find(z=>z.id===sp.id).staff.push(id);});},
+        canPlace:!!cur&&!(pl&&pl.id===cur.id),placed:!!pl,
+        onPlace:()=>ss({placing:true,placeTarget:sp.id,pending:null}),
+        onUnplace:()=>this.up(x=>{x.plans.forEach(q=>{q.markers=q.markers.filter(m=>m.pos!==sp.id);});}),
+        delLabel:s.delPos?'Zeker? Klik nogmaals':'Positie verwijderen',delFg:s.delPos?'#ff5f57':'#8a949e',
+        onDelete:()=>{if(!s.delPos){ss({delPos:true});setTimeout(()=>this.setState({delPos:false}),4000);return;}this.up(x=>{x.positions=x.positions.filter(z=>z.id!==sp.id);x.plans.forEach(q=>{q.markers=q.markers.filter(m=>m.pos!==sp.id);});});ss({selPos:null,delPos:false});}};
+    } else o.sel={types:[],staff:[],staffOpts:[]};
+    o.posCount=String(poss.length);
+    o.posRows=poss.slice().sort((a,b)=>{const pa=planOf(a.id),pb=planOf(b.id);return ((pa?pa.order:99)-(pb?pb.order:99))||a.name.localeCompare(b.name,'nl');}).map(p=>{const pl=planOf(p.id),[icon,col]=PT[p.type]||PT.Overig,on=s.selPos===p.id;
+      return {name:p.name,icon,col,sub:(pl?pl.name:'Niet geplaatst')+(p.staff.length?' · '+p.staff.map(id=>(d.staff.find(z=>z.id===id)||{name:id}).name.split(' ')[0]).join(', '):''),subCol:pl?'#8a949e':'#f2d64b',staffN:p.staff.length?p.staff.length+'p':'—',
+        bg:on?'rgba(242,179,61,.08)':'transparent',bd:on?'#f2b33d':'transparent',onClick:()=>ss({selPos:p.id,pending:null,delPos:false,...(pl?{plan:pl.id}:{})})};});
+    o.looseName=s.looseName;o.onLoose=e=>ss({looseName:e.target.value});
+    o.addLoose=()=>{const nm=s.looseName.trim();if(!nm)return;const id=SAK.uid('P');this.up(x=>{x.positions.push({id,owner:s.owner,name:nm,type:'Post',staff:[]});});ss({looseName:'',selPos:id});};
+    o.onLooseKey=e=>{if(e.key==='Enter')o.addLoose();};
+    return o;
+  }
+}
+</script>
+</body>
+</html>

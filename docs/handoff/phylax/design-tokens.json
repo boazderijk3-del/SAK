@@ -1,0 +1,44 @@
+{
+  "font": {
+    "sans": "'Space Grotesk', sans-serif",
+    "mono": "'JetBrains Mono', monospace",
+    "googleFonts": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+  },
+  "color": {
+    "bg": {
+      "canvas": "#07080b", "app": "#0b0d12", "panel": "#0e1117", "segment": "#12151c",
+      "card": "#151922", "rowSelected": "#151a23", "navActive": "#1a1f29", "segmentActive": "#1f2430",
+      "bubbleSelf": "#15232a", "llm": "#14121c"
+    },
+    "line": {
+      "row": "rgba(255,255,255,.05)", "divider": "rgba(255,255,255,.06)", "frame": "rgba(255,255,255,.08)",
+      "timeline": "rgba(255,255,255,.1)", "control": "rgba(255,255,255,.14)", "dashed": "rgba(255,255,255,.18)",
+      "llm": "rgba(185,140,255,.25)"
+    },
+    "text": { "primary": "#e8eaf0", "secondary": "#b6bcc6", "muted": "#8b909b", "faint": "#5c616b", "onAccent": "#04211f" },
+    "accent": { "teal": "#35d0c4", "tealHover": "#7fe6dd", "amber": "#e2ab44", "purple": "#b98cff" },
+    "status": { "voorstel": "#e2ab44", "bevestigd": "#56d38a", "akkoord": "#35d0c4", "afgewezen": "#5c616b", "fout": "#f0706a", "verwerken": "#e2ab44", "verwerkt": "#56d38a" },
+    "label": {
+      "dreiging": "#f0706a", "intimidatie": "#f0706a", "observatie": "#e2ab44", "locatie": "#e2ab44",
+      "contactpoging": "#b6bcc6", "nieuw nummer": "#b98cff", "nieuw account": "#b98cff"
+    },
+    "timeline": { "Bericht": "#35d0c4", "Gegeven": "#e2ab44", "Gebeurtenis": "#b6bcc6", "dreiging": "#f0706a" },
+    "chart": { "bar": "rgba(53,208,196,.55)", "barHighlight": "#b98cff" },
+    "paper": { "bg": "#f2f1ed", "text": "#1b1d22", "muted": "#6b6f78", "rule": "#dddbd4" }
+  },
+  "fontSize": { "xs": 10, "sm": 11, "md": 12, "base": 13, "lg": 14, "title": 15, "logo": 18, "h3": 20, "h2": 22, "report": 24, "value": 28 },
+  "fontWeight": { "regular": 400, "medium": 500, "semibold": 600 },
+  "letterSpacing": { "label": ".06em", "channel": ".04em", "logo": ".02em", "title": "-.01em" },
+  "radius": { "pill": 4, "chip": 5, "control": 6, "nav": 7, "button": 8, "card": 10, "drop": 12 },
+  "shadow": { "dropdown": "0 16px 40px rgba(0,0,0,.5)" },
+  "space": [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 36],
+  "layout": {
+    "frame": { "width": 1440, "height": 900, "minWidth": 1280 },
+    "sidebar": 240, "header": 52,
+    "analyse": {
+      "materiaal": ["1fr", 360], "herkend": [400, "1fr"], "gesprekken": [250, "1fr", 330],
+      "tijdlijn": [240, "1fr"], "verbanden": ["1fr", 320], "rapport": [300, "1fr"], "paperWidth": 620,
+      "bubbleMaxWidth": 520
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "sak-suite",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "tokens": "node packages/tokens/bouw.mjs",
+    "dev:suite": "npm run dev -w @sak/suite"
+  }
+}

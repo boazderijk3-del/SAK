@@ -1,0 +1,10 @@
+/* GEGENEREERD door packages/tokens/bouw.mjs.
+   De suite-start is bewust neutraal: geen teal en geen amber, zodat geen
+   enkel programma voorgaat (suite/00-suite-start.md). */
+@import "./phylax.css";
+:root, .suite {
+  --suite-bg: #08090b;
+  --suite-primary: #e8eaf0;
+  --suite-primary-hover: #ffffff;
+  --suite-on-primary: #08090b;
+}
