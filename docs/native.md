@@ -102,6 +102,57 @@ Native zijn is werk dat je erbij neemt:
 
 ---
 
+## Kan het zonder Apple-ontwikkelaarsaccount?
+
+Op **iOS: niet werkbaar**, en de reden is uitgerekend de functie waarvoor we
+native wilden.
+
+| weg | kost | push? | praktisch |
+|---|---|---|---|
+| gratis Apple ID, zelf ondertekenen via Xcode | €0 | **nee** | profiel verloopt na **7 dagen**, dan stopt de app. Per toestel een Mac en een kabel |
+| Developer Program | ~€99/jaar | ja | App Store, TestFlight (90 dagen per bouw), Ad Hoc (100 toestellen) |
+| Enterprise Program | ~€299/jaar | ja | alleen voor **eigen personeel** van een groot bedrijf; Apple eist 100+ werknemers. Wij vallen er niet onder, en oneigenlijk gebruik kost je het certificaat |
+| EU-webdistributie (DMA) | — | ja | klinkt als een uitweg maar is het niet: je moet al jaren lid zijn van het Developer Program én een app met zeer veel installaties hebben |
+
+**Gratis ondertekenen kan dus wel, maar levert een app zonder push die na een
+week stopt.** Dat is precies het tegenovergestelde van wat deze app moet doen.
+
+### Android is een ander verhaal: gratis én mét push
+Een Android-build kun je als APK rechtstreeks installeren — via een link, MDM
+of een kabel. **Push werkt daarbij gewoon**, want Firebase Cloud Messaging
+hangt niet aan distributie via de Play Store; een gratis Firebase-project is
+genoeg. Een Play-ontwikkelaarsaccount (eenmalig, ~€25) heb je pas nodig als je
+in de Play Store wil staan.
+
+Dat is een echte asymmetrie, en hij valt goed uit voor dit product:
+beveiligingsbedrijven werken vaak met goedkopere bedrijfstelefoons op Android.
+
+### Desktop
+Tauri op **Windows en Linux kost niets**. Voor macOS wil je ondertekenen en
+notariseren, en dat loopt via hetzelfde betaalde Apple-account — anders krijgt
+de gebruiker een waarschuwing van Gatekeeper en moet hij de app met
+rechtermuisknop openen.
+
+### Wat dit betekent voor de volgorde
+1. **Android-schil eerst.** Gratis, push werkt, en je kunt de hele
+   opdrachtketen inclusief de 180-secondenklok echt beproeven.
+2. **iOS voorlopig als webapp op het beginscherm.** Push werkt daar beperkt
+   (iOS 16.4+), zonder geluid door de stille stand. Goed genoeg om mee te
+   werken, niet goed genoeg voor productie.
+3. **Het Developer Program zodra er een betalende opdrachtgever is.** Dan is
+   €99 per jaar geen afweging meer.
+
+### En waarom die tussenstand niet gevaarlijk is
+Omdat het ontwerp **push al niet volledig vertrouwt**. Blijft `Ontvangen` uit,
+dan gaat de opdracht na 180 seconden naar de teamleider, met "Bevestigd via
+portofoon" of "Overnemen" als uitweg. De portofoon is de achtervang.
+
+Een zwakkere pushkanaal betekent dus **meer escalaties naar de teamleider**,
+niet stil verloren opdrachten. Dat is precies het verschil tussen een systeem
+dat netjes terugvalt en een systeem dat omvalt — en het is hier ingebouwd.
+
+---
+
 ## Wat we NU doen
 
 **Ontwerpen voor native, eerst web opleveren.**
