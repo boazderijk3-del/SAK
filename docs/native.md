@@ -153,6 +153,62 @@ dat netjes terugvalt en een systeem dat omvalt — en het is hier ingebouwd.
 
 ---
 
+## De vorm: één webinterface, een schil eromheen
+
+Dit is de werkwijze. Dezelfde React-build is tegelijk:
+
+- **een website op een URL** — iedereen kan meekijken en meetesten zonder iets
+  te installeren. Een link sturen is genoeg;
+- **de inhoud van een Android-app** — dezelfde schermen, maar met echte push,
+  achtergrondlocatie en echte opslag.
+
+Er is dus geen "webversie" en "appversie" die uit elkaar lopen. Er is één
+programma, en de schil voegt alleen toestelmogelijkheden toe.
+
+### Twee manieren om de webinterface in de schil te zetten
+
+| | hoe | bijwerken | offline |
+|---|---|---|---|
+| **meegebakken** | html/js/css zit ín de APK | nieuwe APK | **werkt** |
+| op afstand | de schil laadt de live site | direct | **werkt niet** |
+
+"Op afstand" klinkt aantrekkelijk tijdens het testen — je past de site aan en
+iedereen heeft het meteen. Maar dan komt de hele interface van het netwerk, en
+**een beveiliger zonder bereik ziet dan niets**. Dat sloopt juist de
+eigenschap waar dit product op staat. Apple kijkt er bovendien kritisch naar
+bij een app die niet meer is dan een venster op een website.
+
+**Dus: meegebakken.** Tijdens het bouwen mag de schil naar een draaiende
+ontwikkelserver wijzen; wat je uitgeeft bevat de interface zelf.
+
+### De regel die hieruit volgt
+**De webbouw moet op zichzelf volledig werken.** De native mogelijkheden zijn
+een versterking, geen voorwaarde. Elk scherm doet het in een gewone browser,
+met de web-variant eronder: `Notification`/Web Push, `navigator.geolocation`
+(alleen op de voorgrond), IndexedDB.
+
+En het scherm **zegt eerlijk wat het niet kan**. Draait de app in een browser,
+dan staat er bij de kaart: *"je positie wordt alleen bijgewerkt zolang dit
+scherm open staat"*. Een beperking die je niet ziet is erger dan een beperking
+die er staat — dat is dezelfde regel als "een storing mag er nooit uitzien als
+een leeg resultaat".
+
+### Live gaan om te testen: wat daarvoor nodig is
+1. **De webinterface op een URL.** Statische build, EU, gratis te hosten.
+2. **De API ergens die lang openstaande verbindingen aankan.** Dit is de
+   beperking die de keuze stuurt: wij gebruiken WebSockets, en die hebben een
+   proces nodig dat blijft draaien. Functie-gebaseerde hosting (het
+   "serverless" model) valt daarmee af. Het wordt een container of een kleine
+   VPS in de EU.
+3. **Een PWA-manifest en service worker.** Kost weinig zodra de webapp er is,
+   en geeft op iOS "aan beginscherm toevoegen" met beperkte push. Genoeg om
+   mee te testen.
+
+Daarmee kun je live met testers **vóór** er één app-winkel aan te pas komt, en
+komt het Apple-account er pas bij als iemand het echt wil afnemen.
+
+---
+
 ## Wat we NU doen
 
 **Ontwerpen voor native, eerst web opleveren.**

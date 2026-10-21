@@ -1,0 +1,212 @@
+/* Suite Start — opmaak volgens docs/handoff/suite/specs/Suite Start.md.
+   Die spec is BINDEND: elke waarde hieronder staat er letterlijk in.
+   Waar de spec-waarde gelijk is aan een token gebruiken we var(), zodat een
+   wijziging in design-tokens.json meteen doorwerkt. */
+@import "@sak/tokens/suite.css";
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--suite-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: var(--font-mono); }
+
+/* ── schil ───────────────────────────────────────────────────────────── */
+.schil { min-height: 100vh; display: flex; flex-direction: column; background: var(--suite-bg); }
+
+.kop {
+  height: 56px; flex: none; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; padding: 0 28px;
+  border-bottom: 1px solid var(--color-line-divider);
+}
+.kop-links { display: flex; align-items: center; gap: 14px; }
+.merktekens { display: flex; align-items: center; gap: 6px; }
+.merk-phylax  { width: 14px; height: 14px; border-radius: 4px;  border: 2px solid var(--color-accent-teal); }
+.merk-sak     { width: 14px; height: 14px; border-radius: 2px;  background: #f2b33d; }
+.merk-ophanim { width: 14px; height: 14px; border-radius: 50%;  border: 2px solid #8a949e; }
+.woordmerk { font-size: var(--font-size-lg); font-weight: 600; letter-spacing: .01em; }
+
+/* ── gebruikersmenu ──────────────────────────────────────────────────── */
+.gebruiker { position: relative; }
+.gebruiker-knop {
+  display: flex; align-items: center; gap: 10px; background: transparent;
+  border: 1px solid rgba(255,255,255,.1); border-radius: var(--radius-button);
+  padding: 5px 10px 5px 5px; color: var(--color-text-primary); cursor: pointer; font: inherit;
+}
+.gebruiker-knop:hover { background: var(--color-bg-segment); }
+.initialen {
+  width: 26px; height: 26px; border-radius: var(--radius-control);
+  background: var(--color-bg-segment-active); display: flex; align-items: center;
+  justify-content: center; font-family: var(--font-mono); font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.gebruiker-naam { font-size: var(--font-size-base); }
+.gebruiker-pijl { font-family: var(--font-mono); font-size: var(--font-size-sm); color: var(--color-text-muted); }
+.gebruiker-paneel {
+  position: absolute; right: 0; top: calc(100% + 8px); width: 260px; z-index: 20;
+  background: var(--color-bg-card); border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--radius-card); padding: 6px; box-shadow: var(--shadow-dropdown);
+  display: flex; flex-direction: column; gap: 2px;
+}
+.gebruiker-hoofd {
+  padding: 8px 10px 10px; border-bottom: 1px solid var(--color-line-divider);
+  margin-bottom: 4px; display: flex; flex-direction: column; gap: 3px;
+}
+.gebruiker-hoofd b { font-size: var(--font-size-base); font-weight: 600; }
+.gebruiker-hoofd span { font-family: var(--font-mono); font-size: var(--font-size-sm); color: var(--color-text-muted); }
+.menu-regel {
+  text-align: left; background: transparent; border: 0; border-radius: var(--radius-control);
+  padding: 8px 10px; color: var(--color-text-primary); font: inherit;
+  font-size: var(--font-size-base); cursor: pointer;
+}
+.menu-regel:hover { background: #1f2531; }
+
+/* ── authenticatie: één kolom, gecentreerd ───────────────────────────── */
+.auth { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
+.auth-kolom { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 24px; }
+.titelblok { display: flex; flex-direction: column; gap: 6px; }
+.titelblok h1 { margin: 0; font-size: var(--font-size-h2); font-weight: 600; letter-spacing: var(--letter-spacing-title); }
+.titelblok p  { margin: 0; font-size: var(--font-size-base); color: var(--color-text-muted); line-height: 1.5; }
+
+/* Een storing en een bevestiging zien er bewust VERSCHILLEND uit.
+   Dezelfde vorm met een andere kleur leest te makkelijk over. */
+.vak-fout {
+  font-size: var(--font-size-base); color: #f0706a;
+  border: 1px solid rgba(240,112,106,.4); border-radius: var(--radius-button);
+  padding: 10px 12px; line-height: 1.45;
+}
+.vak-goed {
+  font-size: var(--font-size-base); color: var(--color-status-bevestigd);
+  border: 1px solid rgba(86,211,138,.35); border-radius: var(--radius-button);
+  padding: 10px 12px; line-height: 1.45;
+}
+
+.velden { display: flex; flex-direction: column; gap: 14px; }
+.veld { display: flex; flex-direction: column; gap: 6px; }
+.veld-label { font-size: var(--font-size-md); color: var(--color-text-secondary); }
+.veld-label-rij { display: flex; justify-content: space-between; font-size: var(--font-size-md); color: var(--color-text-secondary); }
+.invoer {
+  height: 40px; border-radius: var(--radius-button); border: 1px solid var(--color-line-control);
+  background: var(--color-bg-app); color: var(--color-text-primary); padding: 0 12px;
+  font: inherit; font-size: var(--font-size-lg); outline: none;
+}
+.knop-primair {
+  height: 40px; border-radius: var(--radius-button); border: 0;
+  background: var(--suite-primary); color: var(--suite-on-primary);
+  font: inherit; font-size: var(--font-size-lg); font-weight: 600; cursor: pointer;
+}
+.knop-primair:hover { background: var(--suite-primary-hover); }
+.knop-tweede {
+  height: 40px; border-radius: var(--radius-button); border: 1px solid var(--color-line-control);
+  background: transparent; color: var(--color-text-primary);
+  font: inherit; font-size: var(--font-size-lg); cursor: pointer;
+}
+.knop-tweede:hover { background: var(--color-bg-segment); }
+.tekstknop { color: var(--color-text-muted); cursor: pointer; background: none; border: 0; font: inherit; padding: 0; }
+.tekstknop:hover { color: var(--color-text-primary); }
+.scheiding {
+  display: flex; align-items: center; gap: 12px; font-family: var(--font-mono);
+  font-size: var(--font-size-sm); color: var(--color-text-faint);
+}
+.scheiding span { flex: 1; height: 1px; background: var(--color-line-frame); }
+.voetregel { margin: 0; font-size: var(--font-size-md); color: var(--color-text-faint); line-height: 1.5; }
+
+.code-invoer {
+  height: 56px; border-radius: var(--radius-button); border: 1px solid var(--color-line-control);
+  background: var(--color-bg-app); color: var(--color-text-primary); padding: 0 16px;
+  font-family: var(--font-mono); font-size: 26px; letter-spacing: .4em;
+  text-align: center; outline: none;
+}
+.onderrij { display: flex; justify-content: space-between; font-size: var(--font-size-md); color: var(--color-text-muted); }
+
+/* ── programmakeuze ──────────────────────────────────────────────────── */
+.keuze {
+  flex: 1; width: 100%; max-width: 1120px; margin: 0 auto;
+  padding: 56px 28px; display: flex; flex-direction: column; gap: 36px;
+}
+.keuze-kop { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.eyebrow {
+  font-family: var(--font-mono); font-size: var(--font-size-sm);
+  color: var(--color-text-muted); letter-spacing: var(--letter-spacing-label);
+}
+.keuze-kop h1 { margin: 0; font-size: 28px; font-weight: 600; letter-spacing: var(--letter-spacing-title); }
+.opdrachtgever { display: flex; flex-direction: column; gap: 6px; min-width: 260px; }
+.opdrachtgever .eyebrow { font-size: var(--font-size-xs); }
+.keuzelijst {
+  height: 38px; border-radius: var(--radius-button); border: 1px solid var(--color-line-control);
+  background: var(--color-bg-app); color: var(--color-text-primary); padding: 0 10px;
+  font: inherit; font-size: var(--font-size-base); outline: none;
+}
+.kaarten { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+
+.kaart {
+  display: flex; flex-direction: column; gap: 22px; padding: 24px;
+  border-radius: var(--radius-drop); border: 1px solid var(--color-line-frame);
+  min-height: 300px; text-decoration: none; color: var(--color-text-primary);
+}
+.kaart-phylax { background: var(--color-bg-panel); }
+.kaart-phylax:hover { border-color: var(--color-accent-teal); }
+.kaart-sak { background: #0d1013; }
+/* Ophanim: gestippeld en gedempt. Niet klikbaar, want er is nog geen ontwerp.
+   Hem weglaten zou verbergen dat hij komt; hem klikbaar maken zou liegen. */
+.kaart-later { border: 1px dashed rgba(255,255,255,.12); opacity: .6; }
+
+.kaart-kop { display: flex; align-items: center; justify-content: space-between; }
+.kaart-merk { display: flex; align-items: center; gap: 10px; }
+.kaart-merk-phylax { width: 22px; height: 22px; border-radius: var(--radius-control); border: 2px solid var(--color-accent-teal); }
+.kaart-merk-ophanim { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #8a949e; }
+.kaart-naam { font-size: var(--font-size-h3); font-weight: 600; letter-spacing: var(--letter-spacing-logo); }
+.kaart-rol { font-family: var(--font-mono); font-size: var(--font-size-sm); color: var(--color-text-muted); }
+.kaart-tekst { margin: 0; font-size: var(--font-size-lg); color: var(--color-text-secondary); line-height: 1.5; }
+.kaart-tekst-dim { margin: 0; font-size: var(--font-size-lg); color: var(--color-text-muted); line-height: 1.5; }
+
+.tellers { margin-top: auto; display: flex; flex-direction: column; border-top: 1px solid var(--color-line-divider); }
+.teller { display: flex; justify-content: space-between; padding: 10px 0; font-size: var(--font-size-base); }
+.teller:not(:last-child) { border-bottom: 1px solid var(--color-line-row); }
+.teller-naam { color: var(--color-text-secondary); }
+.teller-waarde { font-family: var(--font-mono); color: var(--color-text-muted); }
+.teller-open { font-family: var(--font-mono); color: var(--color-accent-amber); }
+.kaart-open { font-size: var(--font-size-base); font-weight: 600; color: var(--color-accent-teal); }
+
+.sak-woordmerk { display: flex; align-items: baseline; gap: 8px; }
+.sak-woordmerk b { font: 700 20px var(--font-mono); color: #f2b33d; letter-spacing: .06em; }
+.sak-woordmerk span { font: 600 12px 'Barlow Condensed', sans-serif; letter-spacing: .16em; color: #8a949e; }
+.sak-tegels { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+/* Geen radius: dat is de vormtaal van SAK (hoekig), tegenover Phylax' radius. */
+.sak-tegel {
+  display: flex; flex-direction: column; gap: 3px; padding: 10px 12px;
+  border: 1px solid #2c343c; color: #e6e9ec; text-decoration: none;
+}
+.sak-tegel:hover { border-color: #f2b33d; }
+.sak-tegel b { font: 600 14px Barlow, sans-serif; }
+.sak-tegel span { font-size: var(--font-size-sm); color: #8a949e; }
+
+/* ── account ─────────────────────────────────────────────────────────── */
+.account {
+  flex: 1; width: 100%; max-width: 720px; margin: 0 auto;
+  padding: 56px 28px; display: flex; flex-direction: column; gap: 28px;
+}
+.account h1 { margin: 0; font-size: var(--font-size-h2); font-weight: 600; letter-spacing: var(--letter-spacing-title); }
+.terug { font-size: var(--font-size-md); color: var(--color-text-muted); cursor: pointer; background: none; border: 0; font-family: inherit; padding: 0; text-align: left; }
+.terug:hover { color: var(--color-text-primary); }
+.rijen { display: flex; flex-direction: column; border-top: 1px solid var(--color-line-divider); }
+.rij {
+  display: grid; grid-template-columns: 180px minmax(0, 1fr) auto; gap: 16px;
+  align-items: center; padding: 14px 0; border-bottom: 1px solid var(--color-line-row);
+}
+.rij-k { font-size: var(--font-size-md); color: var(--color-text-muted); }
+.rij-v { font-size: var(--font-size-base); color: var(--color-text-primary); }
+.rij-a { font-size: var(--font-size-md); color: var(--color-text-muted); }
+.sessies { display: flex; flex-direction: column; gap: 10px; }
+.sessie {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center;
+  padding: 12px 14px; border: 1px solid var(--color-line-frame); border-radius: var(--radius-button);
+}
+.sessie-naam { display: flex; flex-direction: column; gap: 3px; }
+.sessie-naam b { font-size: var(--font-size-base); font-weight: 400; }
+.sessie-naam span { font-family: var(--font-mono); font-size: var(--font-size-sm); color: var(--color-text-muted); }
